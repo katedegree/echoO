@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+:root {
+  /* default color */
+  --kateform-color-default-white: oklch(92% 0.004 286.32); /* Zinc-200 */
+  --kateform-color-default-white-hover: oklch(
+    87.1% 0.006 286.286
+  ); /* Zinc-300 */
+  --kateform-color-default-white-popover: oklch(98.5% 0 0); /* Zinc-50 */
+  --kateform-color-default-black: oklch(27.4% 0.006 286.033); /* Zinc-800 */
+  --kateform-color-default-black-hover: oklch(37% 0.013 285.805); /* Zinc-500 */
+  --kateform-color-default-black-popover: oklch(
+    21% 0.006 285.885
+  ); /* Zinc-900 */
+  --kateform-color-default-red: oklch(71.2% 0.194 13.428); /* Rose-400 */
+
+  /* light color */
+  --kateform-color-light-label: var(--kateform-color-default-black);
+  --kateform-color-light-value: var(--kateform-color-default-black);
+  --kateform-color-light-option: var(--kateform-color-default-black);
+  --kateform-color-light-error: var(--kateform-color-default-red);
+  --kateform-color-light-flat: var(--kateform-color-default-white);
+  --kateform-color-light-flat-hover: var(--kateform-color-default-white-hover);
+  --kateform-color-light-popover: var(--kateform-color-default-white-popover);
+  --kateform-color-light-popover-hover: var(
+    --kateform-color-default-white-hover
+  );
+  --kateform-color-light-bordered: var(--kateform-color-default-black);
+  --kateform-color-light-bordered-hover: var(
+    --kateform-color-default-black-hover
+  );
+  /* dark color */
+  --kateform-color-dark-label: var(--kateform-color-default-white);
+  --kateform-color-dark-value: var(--kateform-color-default-white);
+  --kateform-color-dark-option: var(--kateform-color-default-white);
+  --kateform-color-dark-error: var(--kateform-color-default-red);
+  --kateform-color-dark-flat: var(--kateform-color-default-black);
+  --kateform-color-dark-flat-hover: var(--kateform-color-default-black-hover);
+  --kateform-color-dark-popover: var(--kateform-color-default-black-popover);
+  --kateform-color-dark-popover-hover: var(
+    --kateform-color-default-black-hover
+  );
+  --kateform-color-dark-bordered: var(--kateform-color-default-white);
+  --kateform-color-dark-bordered-hover: var(
+    --kateform-color-default-white-hover
+  );
+
+  /* text-color */
+  --kateform-color-label: var(--kateform-color-light-label);
+  --kateform-color-value: var(--kateform-color-light-value);
+  --kateform-color-option: var(--kateform-color-light-option);
+  --kateform-color-error: var(--kateform-color-light-error);
+  /* background-color */
+  --kateform-color-flat: var(--kateform-color-light-flat);
+  --kateform-color-flat-hover: var(--kateform-color-light-flat-hover);
+  --kateform-color-popover: var(--kateform-color-light-popover);
+  --kateform-color-popover-hover: var(--kateform-color-light-popover-hover);
+  /* border-color */
+  --kateform-color-bordered: var(--kateform-color-light-bordered);
+  --kateform-color-bordered-hover: var(--kateform-color-light-bordered-hover);
+
+  --kateform-text-sm: 0.875rem; /* 14px */
+  --kateform-text-md: 1rem; /* 16px */
+
+  --kateform-spacing-1: 1px; /* 1px */
+  --kateform-spacing-sm: 0.375rem; /* 6px */
+  --kateform-spacing-md: 0.625rem; /* 10px */
+  --kateform-spacing-lg: 1rem; /* 16px */
+
+  --kateform-radius-input: 1rem; /* 16px */
+  --kateform-radius-form: 1rem; /* 16px */
+}
+
+.dark {
+  --kateform-color-label: var(--kateform-color-dark-label);
+  --kateform-color-value: var(--kateform-color-dark-value);
+  --kateform-color-option: var(--kateform-color-dark-option);
+  --kateform-color-error: var(--kateform-color-dark-error);
+  --kateform-color-flat: var(--kateform-color-dark-flat);
+  --kateform-color-flat-hover: var(--kateform-color-dark-flat-hover);
+  --kateform-color-popover: var(--kateform-color-dark-popover);
+  --kateform-color-popover-hover: var(--kateform-color-dark-popover-hover);
+  --kateform-color-bordered: var(--kateform-color-dark-bordered);
+  --kateform-color-bordered-hover: var(--kateform-color-dark-bordered-hover);
+}
+
+@theme inline {
+  --*: initial;
+
+  --color-label: var(--kateform-color-label);
+  --color-value: var(--kateform-color-value);
+  --color-option: var(--kateform-color-option);
+  --color-error: var(--kateform-color-error);
+  --color-flat: var(--kateform-color-flat);
+  --color-flat-hover: var(--kateform-color-flat-hover);
+  --color-popover: var(--kateform-color-popover);
+  --color-popover-hover: var(--kateform-color-popover-hover);
+  --color-bordered: var(--kateform-color-bordered);
+  --color-bordered-hover: var(--kateform-color-bordered-hover);
+
+  --text-sm: var(--kateform-text-sm);
+  --text-md: var(--kateform-text-md);
+
+  --spacing-1: var(--kateform-spacing-1);
+  --spacing-sm: var(--kateform-spacing-sm);
+  --spacing-md: var(--kateform-spacing-md);
+  --spacing-lg: var(--kateform-spacing-lg);
+
+  --radius-input: var(--kateform-radius-input);
+  --radius-form: var(--kateform-radius-form);
+
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+@utility text-placeholder {
+  @apply text-[color-mix(in_srgb,_var(--kateform-color-value)_60%,_var(--kateform-color-flat)_40%)];
+}
+
+@utility no-scrollbar {
+  @apply [&::-webkit-scrollbar]:hidden;
+}

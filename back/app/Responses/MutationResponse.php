@@ -3,6 +3,7 @@
 namespace App\Responses;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 
 enum MutationResponseStatus: string
 {
@@ -13,7 +14,7 @@ enum MutationResponseStatus: string
   public function httpCode(): int
   {
     return match ($this) {
-      self::Success => 201,
+      self::Success => 200,
       self::Error => 500,
       self::Validation => 422,
     };
@@ -22,31 +23,42 @@ enum MutationResponseStatus: string
 
 class MutationResponse
 {
-  protected MutationResponseStatus $status = MutationResponseStatus::Success;
-  protected array $data = [];
+  protected MutationResponseStatus $status;
+  protected array $data;
+
+  private function __construct(
+    MutationResponseStatus $status,
+    array $data = []
+  ) {
+    $this->status = $status;
+    $this->data = $data;
+  }
 
   public static function success(string $message): self
   {
-    $instance = new self();
-    $instance->status = MutationResponseStatus::Success;
-    $instance->data['message'] = $message;
-    return $instance;
+    return new self(
+      MutationResponseStatus::Success,
+      ['message' => $message]
+    );
   }
 
   public static function error(string $message): self
   {
-    $instance = new self();
-    $instance->status = MutationResponseStatus::Error;
-    $instance->data['message'] = $message;
-    return $instance;
+    return new self(
+      MutationResponseStatus::Error,
+      ['message' => $message]
+    );
   }
 
-  public static function validation(array $data): self
+  public static function validation(array | Collection $messages): self
   {
-    $instance = new self();
-    $instance->status = MutationResponseStatus::Validation;
-    $instance->data["messages"] = $data;
-    return $instance;
+    if ($messages instanceof Collection) {
+      $messages = $messages->toArray();
+    }
+    return new self(
+      MutationResponseStatus::Validation,
+      ['messages' => $messages]
+    );
   }
 
   public function with(string $key, mixed $value): self

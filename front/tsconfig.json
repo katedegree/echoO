@@ -19,6 +19,7 @@
       }
     ],
     "paths": {
+      "@kateform/*": ["./src/kateform/*"],
       "@/*": ["./src/*"]
     }
   },
