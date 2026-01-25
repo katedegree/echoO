@@ -8,12 +8,11 @@ class QueryResponse
 {
   private const HTTP_OK = 200;
 
-  protected mixed $data;
-  protected array $headers = [];
+  protected array $data;
 
   private function __construct(mixed $data)
   {
-    $this->data = $data;
+    $this->data['data'] = $data;
   }
 
   public static function success(mixed $data): self
@@ -21,15 +20,14 @@ class QueryResponse
     return new self($data);
   }
 
-  public function withHeader(string $key, string $value): self
+  public function with(string $key, mixed $value): self
   {
-    $this->headers[$key] = $value;
+    $this->data[$key] = $value;
     return $this;
   }
 
   public function json(): JsonResponse
   {
-    return response()->json($this->data, self::HTTP_OK, $this->headers)
-      ->header('Access-Control-Expose-Headers', implode(',', array_keys($this->headers)));
+    return response()->json($this->data, self::HTTP_OK);
   }
 }

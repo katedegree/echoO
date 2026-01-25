@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { cn } from "../utils";
+import { cn } from "@kateform/utils";
 import { motion } from "framer-motion";
-import { useError } from "../hooks";
+import { useErrorStore } from "../stores";
 
 export interface InputWrapperProps<T> {
   id: string;
@@ -10,7 +10,6 @@ export interface InputWrapperProps<T> {
   onReadOnly: (() => void) | undefined;
   isDisabled: boolean;
   isReadOnly: boolean;
-  errorMessage: string | undefined;
   value: T;
 }
 
@@ -22,16 +21,12 @@ export function InputWrapper<T>({
   onReadOnly,
   isDisabled,
   isReadOnly,
-  errorMessage,
 }: InputWrapperProps<T>) {
-  const { errorMessages, setErrorMessage } = useError();
+  const { error, setError } = useErrorStore(id);
 
   useEffect(() => {
-    setErrorMessage(id, "");
-  }, [value]);
-  useEffect(() => {
-    setErrorMessage(id, errorMessage || "");
-  }, [errorMessage]);
+    setError(id, "");
+  }, [value, id, setError]);
 
   return (
     <div>
@@ -45,10 +40,10 @@ export function InputWrapper<T>({
       <motion.div
         className={cn(
           "relative rounded-input outline-solid",
-          isDisabled && "opacity-80"
+          isDisabled && "opacity-80",
         )}
         animate={
-          errorMessages[id]
+          error
             ? {
                 outlineWidth: "1px",
                 outlineOffset: "1px",
@@ -67,19 +62,14 @@ export function InputWrapper<T>({
       >
         {children}
         {isReadOnly && (
-          <div className="absolute inset-[0]" onClick={onReadOnly} />
+          <div className="absolute inset-0" onClick={onReadOnly} />
         )}
         {isDisabled && (
-          <div className="absolute inset-[0] hover:cursor-not-allowed" />
+          <div className="absolute inset-0 hover:cursor-not-allowed" />
         )}
       </motion.div>
-      <p
-        className={cn(
-          "h-[1lh] pt-1 text-sm text-error",
-          !errorMessages[id] && "opacity-0"
-        )}
-      >
-        {errorMessages[id]}
+      <p className={cn("h-lh pt-1 text-sm text-error", !error && "opacity-0")}>
+        {error}
       </p>
     </div>
   );

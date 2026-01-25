@@ -18,7 +18,6 @@ export const Default: Story = {
     isDisabled: false,
     isReadOnly: false,
     onReadOnly: () => console.log("readonly"),
-    errorMessage: "名前は必須です。",
     startContent: (
       <svg
         xmlns="http://www.w3.org/2000/svg"

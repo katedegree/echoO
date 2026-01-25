@@ -9,7 +9,6 @@ export interface TextInputProps
   isDisabled?: boolean;
   isReadOnly?: boolean;
   onReadOnly?: () => void;
-  errorMessage?: string;
   startContent?: React.ReactNode;
   endContent?: React.ReactNode;
   actionContent?: React.ReactNode;
@@ -20,7 +19,6 @@ export function TextInput({
   isDisabled = false,
   isReadOnly = false,
   onReadOnly,
-  errorMessage,
   startContent,
   endContent,
   actionContent,
@@ -33,7 +31,6 @@ export function TextInput({
       label={label}
       isDisabled={isDisabled}
       isReadOnly={isReadOnly}
-      errorMessage={errorMessage}
       onReadOnly={onReadOnly}
     >
       <InputField

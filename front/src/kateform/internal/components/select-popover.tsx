@@ -52,7 +52,7 @@ export function SelectPopover<T extends string | number>({
       {options?.map((option) => (
         <div
           key={option.value}
-          className="flex items-center gap-sm hover:bg-popover-hover rounded-[calc(var(--radius-input)-var(--spacing-sm))]"
+          className="flex items-center gap-sm hover:bg-popover-hover rounded-[calc(var(--kateform-radius-input)-var(--kateform-spacing-sm))]"
           onClick={() => onSelect?.(option.value)}
         >
           {selected.includes(option.value) && <SelectCheckIcon />}

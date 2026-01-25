@@ -11,17 +11,15 @@ import { usePopover } from "@kateform/internal/hooks/use-popover";
 import { SelectPopover } from "@kateform/internal/components/select-popover";
 import { useEffect, useState } from "react";
 
-export interface MultiSelectInputProps<T extends string | number>
-  extends Omit<
-    React.ComponentProps<"input">,
-    "type" | "id" | "name" | "onChange" | "value"
-  > {
+export interface MultiSelectInputProps<T extends string | number> extends Omit<
+  React.ComponentProps<"input">,
+  "type" | "id" | "name" | "onChange" | "value"
+> {
   id: string;
   label?: string;
   isDisabled?: boolean;
   isReadOnly?: boolean;
   onReadOnly?: () => void;
-  errorMessage?: string;
   startContent?: React.ReactNode;
   endContent?: React.ReactNode;
   actionContent?: (isOpen: boolean) => React.ReactNode;
@@ -37,7 +35,6 @@ export function MultiSelectInput<T extends string | number>({
   isDisabled = false,
   isReadOnly = false,
   onReadOnly,
-  errorMessage,
   startContent,
   endContent,
   actionContent = (isOpen) => <SelectChevronIcon isOpen={isOpen} />,
@@ -50,7 +47,7 @@ export function MultiSelectInput<T extends string | number>({
 }: MultiSelectInputProps<T>) {
   const { isOpen, inputRef, wrapperRef, popoverRef } = usePopover(
     props.ref,
-    popoverHeight
+    popoverHeight,
   );
 
   const [search, setSearch] = useState("");
@@ -65,7 +62,6 @@ export function MultiSelectInput<T extends string | number>({
       label={label}
       isDisabled={isDisabled}
       isReadOnly={isReadOnly}
-      errorMessage={errorMessage}
       onReadOnly={onReadOnly}
     >
       <div ref={wrapperRef}>
@@ -75,12 +71,12 @@ export function MultiSelectInput<T extends string | number>({
           actionContent={actionContent(isOpen)}
         >
           {value.length > 0 && (
-            <div className="overflow-x-auto flex gap-sm no-scrollbar">
+            <div className="overflow-x-auto flex *:shrink-0 gap-sm no-scrollbar">
               {options
                 .filter((option) => value.includes(option.value))
                 .map((option) => (
                   <div
-                    className="flex items-center bg-popover whitespace-nowrap rounded-[calc(var(--radius-input)-var(--spacing-md))] overflow-hidden"
+                    className="flex items-center bg-popover whitespace-nowrap rounded-[calc(var(--kateform-radius-input)-var(--kateform-spacing-md))] overflow-hidden"
                     key={option.value}
                   >
                     <p className="pl-md pr-sm">{option.label}</p>
@@ -118,7 +114,9 @@ export function MultiSelectInput<T extends string | number>({
             notFoundText={notFoundText}
             onSelect={(v) =>
               onChange?.(
-                value.includes(v) ? value.filter((i) => i !== v) : [...value, v]
+                value.includes(v)
+                  ? value.filter((i) => i !== v)
+                  : [...value, v],
               )
             }
           />

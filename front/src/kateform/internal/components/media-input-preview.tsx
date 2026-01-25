@@ -33,7 +33,7 @@ export function MediaInputPreview({
         <MediaRemoveIcon />
       </button>
       {isUploading && (
-        <div className="absolute inset-[0] flex justify-center items-center text-value bg-flat/50">
+        <div className="absolute inset-[0] flex justify-center items-center text-value bg-flat opacity-50">
           {spinner}
         </div>
       )}

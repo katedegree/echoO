@@ -16,7 +16,6 @@ export interface MediaInputProps {
   url?: string | null | undefined;
   isDisabled?: boolean;
   isReadOnly?: boolean;
-  errorMessage?: string;
   onReadOnly?: () => void;
   onChange?: {
     upload: (file: File) => Promise<void>;
@@ -32,7 +31,6 @@ export function MediaInput({
   isDisabled = false,
   isReadOnly = false,
   onReadOnly,
-  errorMessage,
   size = 240,
   placeholder,
   url,
@@ -49,7 +47,6 @@ export function MediaInput({
         label={label}
         isDisabled={isDisabled}
         isReadOnly={isReadOnly}
-        errorMessage={errorMessage}
         onReadOnly={onReadOnly}
       >
         <input

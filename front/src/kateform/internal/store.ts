@@ -8,7 +8,11 @@ export type StoreApi<T> = {
 };
 
 export function useStore<T, U>(api: StoreApi<T>, selector: (state: T) => U): U {
-  return useSyncExternalStore(api.subscribe, () => selector(api.getState()));
+  return useSyncExternalStore(
+    api.subscribe,
+    () => selector(api.getState()),
+    () => selector(api.getState()),
+  );
 }
 
 export const create = <T>(api: StoreApi<T>) => {
@@ -19,7 +23,7 @@ export const create = <T>(api: StoreApi<T>) => {
 };
 
 export function useShallow<S, U extends Record<string, any>>(
-  selector: (state: S) => U
+  selector: (state: S) => U,
 ): (state: S) => U {
   const prev = useRef<U | undefined>(undefined);
 

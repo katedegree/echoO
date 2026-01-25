@@ -68,7 +68,6 @@
   --kateform-spacing-lg: 1rem; /* 16px */
 
   --kateform-radius-input: 1rem; /* 16px */
-  --kateform-radius-form: 1rem; /* 16px */
 }
 
 .dark {
@@ -86,33 +85,757 @@
 
 @theme inline {
   --*: initial;
+}
 
-  --color-label: var(--kateform-color-label);
-  --color-value: var(--kateform-color-value);
-  --color-option: var(--kateform-color-option);
-  --color-error: var(--kateform-color-error);
-  --color-flat: var(--kateform-color-flat);
-  --color-flat-hover: var(--kateform-color-flat-hover);
-  --color-popover: var(--kateform-color-popover);
-  --color-popover-hover: var(--kateform-color-popover-hover);
-  --color-bordered: var(--kateform-color-bordered);
-  --color-bordered-hover: var(--kateform-color-bordered-hover);
+/* shadow */
+@utility shadow {
+  box-shadow:
+    0 4px 6px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)),
+    0 2px 4px -2px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+}
 
-  --text-sm: var(--kateform-text-sm);
-  --text-md: var(--kateform-text-md);
+/* color[color] */
+@utility text-label {
+  color: var(--color-label, var(--kateform-color-label));
+}
+@utility text-value {
+  color: var(--color-value, var(--kateform-color-value));
+}
+@utility text-option {
+  color: var(--color-option, var(--kateform-color-option));
+}
+@utility text-error {
+  color: var(--color-error, var(--kateform-color-error));
+}
+@utility text-flat {
+  color: var(--color-flat, var(--kateform-color-flat));
+}
+@utility text-flat-hover {
+  color: var(--color-flat-hover, var(--kateform-color-flat-hover));
+}
+@utility text-popover {
+  color: var(--color-popover, var(--kateform-color-popover));
+}
+@utility text-popover-hover {
+  color: var(--color-popover-hover, var(--kateform-color-popover-hover));
+}
+@utility text-bordered {
+  color: var(--color-bordered, var(--kateform-color-bordered));
+}
+@utility text-bordered-hover {
+  color: var(--color-bordered-hover, var(--kateform-color-bordered-hover));
+}
 
-  --spacing-1: var(--kateform-spacing-1);
-  --spacing-sm: var(--kateform-spacing-sm);
-  --spacing-md: var(--kateform-spacing-md);
-  --spacing-lg: var(--kateform-spacing-lg);
+/* color[background-color] */
+@utility bg-label {
+  background-color: var(--color-label, var(--kateform-color-label));
+}
+@utility bg-value {
+  background-color: var(--color-value, var(--kateform-color-value));
+}
+@utility bg-option {
+  background-color: var(--color-option, var(--kateform-color-option));
+}
+@utility bg-error {
+  background-color: var(--color-error, var(--kateform-color-error));
+}
+@utility bg-flat {
+  background-color: var(--color-flat, var(--kateform-color-flat));
+}
+@utility bg-flat-hover {
+  background-color: var(--color-flat-hover, var(--kateform-color-flat-hover));
+}
+@utility bg-popover {
+  background-color: var(--color-popover, var(--kateform-color-popover));
+}
+@utility bg-popover-hover {
+  background-color: var(
+    --color-popover-hover,
+    var(--kateform-color-popover-hover)
+  );
+}
+@utility bg-bordered {
+  background-color: var(--color-bordered, var(--kateform-color-bordered));
+}
+@utility bg-bordered-hover {
+  background-color: var(
+    --color-bordered-hover,
+    var(--kateform-color-bordered-hover)
+  );
+}
 
-  --radius-input: var(--kateform-radius-input);
-  --radius-form: var(--kateform-radius-form);
+/* color[border-color] */
+@utility border-label {
+  border-color: var(--color-label, var(--kateform-color-label));
+}
+@utility border-value {
+  border-color: var(--color-value, var(--kateform-color-value));
+}
+@utility border-option {
+  border-color: var(--color-option, var(--kateform-color-option));
+}
+@utility border-error {
+  border-color: var(--color-error, var(--kateform-color-error));
+}
+@utility border-flat {
+  border-color: var(--color-flat, var(--kateform-color-flat));
+}
+@utility border-flat-hover {
+  border-color: var(--color-flat-hover, var(--kateform-color-flat-hover));
+}
+@utility border-popover {
+  border-color: var(--color-popover, var(--kateform-color-popover));
+}
+@utility border-popover-hover {
+  border-color: var(--color-popover-hover, var(--kateform-color-popover-hover));
+}
+@utility border-bordered {
+  border-color: var(--color-bordered, var(--kateform-color-bordered));
+}
+@utility border-bordered-hover {
+  border-color: var(
+    --color-bordered-hover,
+    var(--kateform-color-bordered-hover)
+  );
+}
 
-  --font-weight-normal: 400;
-  --font-weight-bold: 700;
+/* color[outline-color] */
+@utility outline-label {
+  outline-color: var(--color-label, var(--kateform-color-label));
+}
+@utility outline-value {
+  outline-color: var(--color-value, var(--kateform-color-value));
+}
+@utility outline-option {
+  outline-color: var(--color-option, var(--kateform-color-option));
+}
+@utility outline-error {
+  outline-color: var(--color-error, var(--kateform-color-error));
+}
+@utility outline-flat {
+  outline-color: var(--color-flat, var(--kateform-color-flat));
+}
+@utility outline-flat-hover {
+  outline-color: var(--color-flat-hover, var(--kateform-color-flat-hover));
+}
+@utility outline-popover {
+  outline-color: var(--color-popover, var(--kateform-color-popover));
+}
+@utility outline-popover-hover {
+  outline-color: var(
+    --color-popover-hover,
+    var(--kateform-color-popover-hover)
+  );
+}
+@utility outline-bordered {
+  outline-color: var(--color-bordered, var(--kateform-color-bordered));
+}
+@utility outline-bordered-hover {
+  outline-color: var(
+    --color-bordered-hover,
+    var(--kateform-color-bordered-hover)
+  );
+}
 
-  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+/* color[ring-color] */
+@utility ring-label {
+  ring-color: var(--color-label, var(--kateform-color-label));
+}
+@utility ring-value {
+  ring-color: var(--color-value, var(--kateform-color-value));
+}
+@utility ring-option {
+  ring-color: var(--color-option, var(--kateform-color-option));
+}
+@utility ring-error {
+  ring-color: var(--color-error, var(--kateform-color-error));
+}
+@utility ring-flat {
+  ring-color: var(--color-flat, var(--kateform-color-flat));
+}
+@utility ring-flat-hover {
+  ring-color: var(--color-flat-hover, var(--kateform-color-flat-hover));
+}
+@utility ring-popover {
+  ring-color: var(--color-popover, var(--kateform-color-popover));
+}
+@utility ring-popover-hover {
+  ring-color: var(--color-popover-hover, var(--kateform-color-popover-hover));
+}
+@utility ring-bordered {
+  ring-color: var(--color-bordered, var(--kateform-color-bordered));
+}
+@utility ring-bordered-hover {
+  ring-color: var(--color-bordered-hover, var(--kateform-color-bordered-hover));
+}
+
+/* color[shadow-color] */
+@utility shadow-label {
+  --tw-shadow-color: var(--color-label, var(--kateform-color-label));
+}
+@utility shadow-value {
+  --tw-shadow-color: var(--color-value, var(--kateform-color-value));
+}
+@utility shadow-option {
+  --tw-shadow-color: var(--color-option, var(--kateform-color-option));
+}
+@utility shadow-error {
+  --tw-shadow-color: var(--color-error, var(--kateform-color-error));
+}
+@utility shadow-flat {
+  --tw-shadow-color: var(--color-flat, var(--kateform-color-flat));
+}
+@utility shadow-flat-hover {
+  --tw-shadow-color: var(--color-flat-hover, var(--kateform-color-flat-hover));
+}
+@utility shadow-popover {
+  --tw-shadow-color: var(--color-popover, var(--kateform-color-popover));
+}
+@utility shadow-popover-hover {
+  --tw-shadow-color: var(
+    --color-popover-hover,
+    var(--kateform-color-popover-hover)
+  );
+}
+@utility shadow-bordered {
+  --tw-shadow-color: var(--color-bordered, var(--kateform-color-bordered));
+}
+@utility shadow-bordered-hover {
+  --tw-shadow-color: var(
+    --color-bordered-hover,
+    var(--kateform-color-bordered-hover)
+  );
+}
+
+/* color[accent-color] */
+/* color[caret-color] */
+/* color[fill] */
+/* color[stroke] */
+/* color[text-decoration-color] */
+/* color[divide-color] */
+/* color[placeholder-color] */
+
+/* font-size */
+@utility text-sm {
+  font-size: var(--text-sm, var(--kateform-text-sm));
+}
+@utility text-md {
+  font-size: var(--text-md, var(--kateform-text-md));
+}
+
+/* spacing[padding] */
+@utility p-0 {
+  padding: var(--spacing-0, 0);
+}
+@utility pl-0 {
+  padding-inline-start: var(--spacing-0, 0);
+}
+@utility pr-0 {
+  padding-inline-end: var(--spacing-0, 0);
+}
+@utility pt-0 {
+  padding-block-start: var(--spacing-0, 0);
+}
+@utility pb-0 {
+  padding-block-end: var(--spacing-0, 0);
+}
+@utility px-0 {
+  padding-inline: var(--spacing-0, 0);
+}
+@utility py-0 {
+  padding-block: var(--spacing-0, 0);
+}
+@utility p-1 {
+  padding: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility pl-1 {
+  padding-inline-start: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility pr-1 {
+  padding-inline-end: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility pt-1 {
+  padding-block-start: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility pb-1 {
+  padding-block-end: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility px-1 {
+  padding-inline: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility py-1 {
+  padding-block: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility p-sm {
+  padding: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility pl-sm {
+  padding-inline-start: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility pr-sm {
+  padding-inline-end: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility pt-sm {
+  padding-block-start: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility pb-sm {
+  padding-block-end: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility px-sm {
+  padding-inline: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility py-sm {
+  padding-block: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility p-md {
+  padding: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility pl-md {
+  padding-inline-start: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility pr-md {
+  padding-inline-end: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility pt-md {
+  padding-block-start: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility pb-md {
+  padding-block-end: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility px-md {
+  padding-inline: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility py-md {
+  padding-block: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility p-lg {
+  padding: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility pl-lg {
+  padding-inline-start: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility pr-lg {
+  padding-inline-end: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility pt-lg {
+  padding-block-start: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility pb-lg {
+  padding-block-end: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility px-lg {
+  padding-inline: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility py-lg {
+  padding-block: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+
+/* spacing[margin] */
+@utility m-0 {
+  margin: var(--spacing-0, 0);
+}
+@utility ml-0 {
+  margin-inline-start: var(--spacing-0, 0);
+}
+@utility mr-0 {
+  margin-inline-end: var(--spacing-0, 0);
+}
+@utility mt-0 {
+  margin-block-start: var(--spacing-0, 0);
+}
+@utility mb-0 {
+  margin-block-end: var(--spacing-0, 0);
+}
+@utility mx-0 {
+  margin-inline: var(--spacing-0, 0);
+}
+@utility my-0 {
+  margin-block: var(--spacing-0, 0);
+}
+@utility m-1 {
+  margin: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility ml-1 {
+  margin-inline-start: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility mr-1 {
+  margin-inline-end: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility mt-1 {
+  margin-block-start: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility mb-1 {
+  margin-block-end: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility mx-1 {
+  margin-inline: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility my-1 {
+  margin-block: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility m-sm {
+  margin: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility ml-sm {
+  margin-inline-start: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility mr-sm {
+  margin-inline-end: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility mt-sm {
+  margin-block-start: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility mb-sm {
+  margin-block-end: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility mx-sm {
+  margin-inline: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility my-sm {
+  margin-block: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility m-md {
+  margin: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility ml-md {
+  margin-inline-start: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility mr-md {
+  margin-inline-end: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility mt-md {
+  margin-block-start: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility mb-md {
+  margin-block-end: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility mx-md {
+  margin-inline: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility my-md {
+  margin-block: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility m-lg {
+  margin: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility ml-lg {
+  margin-inline-start: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility mr-lg {
+  margin-inline-end: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility mt-lg {
+  margin-block-start: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility mb-lg {
+  margin-block-end: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility mx-lg {
+  margin-inline: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility my-lg {
+  margin-block: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+
+/* spacing[width] */
+@utility w-0 {
+  width: var(--spacing-0, 0);
+}
+@utility w-1 {
+  width: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility w-sm {
+  width: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility w-md {
+  width: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility w-lg {
+  width: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility min-w-0 {
+  min-width: var(--spacing-0, 0);
+}
+@utility min-w-1 {
+  min-width: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility min-w-sm {
+  min-width: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility min-w-md {
+  min-width: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility min-w-lg {
+  min-width: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility max-w-0 {
+  max-width: var(--spacing-0, 0);
+}
+@utility max-w-1 {
+  max-width: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility max-w-sm {
+  max-width: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility max-w-md {
+  max-width: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility max-w-lg {
+  max-width: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+
+/* spacing[height] */
+@utility h-0 {
+  height: var(--spacing-0, 0);
+}
+@utility h-1 {
+  height: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility h-sm {
+  height: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility h-md {
+  height: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility h-lg {
+  height: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility min-h-0 {
+  min-height: var(--spacing-0, 0);
+}
+@utility min-h-1 {
+  min-height: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility min-h-sm {
+  min-height: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility min-h-md {
+  min-height: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility min-h-lg {
+  min-height: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility max-h-0 {
+  max-height: var(--spacing-0, 0);
+}
+@utility max-h-1 {
+  max-height: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility max-h-sm {
+  max-height: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility max-h-md {
+  max-height: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility max-h-lg {
+  max-height: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+
+/* spacing[inset] */
+@utility inset-0 {
+  inset: var(--spacing-0, 0);
+}
+@utility inset-1 {
+  inset: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility inset-sm {
+  inset: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility inset-md {
+  inset: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility inset-lg {
+  inset: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+
+/* spacing[left] */
+@utility left-0 {
+  left: var(--spacing-0, 0);
+}
+@utility left-1 {
+  left: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility left-sm {
+  left: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility left-md {
+  left: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility left-lg {
+  left: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+
+/* spacing[right] */
+@utility right-0 {
+  right: var(--spacing-0, 0);
+}
+@utility right-1 {
+  right: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility right-sm {
+  right: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility right-md {
+  right: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility right-lg {
+  right: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+
+/* spacing[top] */
+@utility top-0 {
+  top: var(--spacing-0, 0);
+}
+@utility top-1 {
+  top: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility top-sm {
+  top: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility top-md {
+  top: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility top-lg {
+  top: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+
+/* spacing[bottom] */
+@utility bottom-0 {
+  bottom: var(--spacing-0, 0);
+}
+@utility bottom-1 {
+  bottom: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility bottom-sm {
+  bottom: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility bottom-md {
+  bottom: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility bottom-lg {
+  bottom: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+
+/* spacing[gap] */
+@utility gap-0 {
+  gap: var(--spacing-0, 0);
+}
+@utility gap-1 {
+  gap: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility gap-sm {
+  gap: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility gap-md {
+  gap: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility gap-lg {
+  gap: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility row-gap-0 {
+  row-gap: var(--spacing-0, 0);
+}
+@utility row-gap-1 {
+  row-gap: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility row-gap-sm {
+  row-gap: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility row-gap-md {
+  row-gap: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility row-gap-lg {
+  row-gap: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+@utility col-gap-0 {
+  column-gap: var(--spacing-0, 0);
+}
+@utility col-gap-1 {
+  column-gap: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility col-gap-sm {
+  column-gap: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility col-gap-md {
+  column-gap: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility col-gap-lg {
+  column-gap: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+
+/* spacing[space-x] */
+@utility space-x-0 {
+  column-gap: var(--spacing-0, 0);
+}
+@utility space-x-1 {
+  column-gap: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility space-x-sm {
+  column-gap: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility space-x-md {
+  column-gap: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility space-x-lg {
+  column-gap: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+
+/* spacing[space-y] */
+@utility space-y-0 {
+  row-gap: var(--spacing-0, 0);
+}
+@utility space-y-1 {
+  row-gap: var(--spacing-1, var(--kateform-spacing-1));
+}
+@utility space-y-sm {
+  row-gap: var(--spacing-sm, var(--kateform-spacing-sm));
+}
+@utility space-y-md {
+  row-gap: var(--spacing-md, var(--kateform-spacing-md));
+}
+@utility space-y-lg {
+  row-gap: var(--spacing-lg, var(--kateform-spacing-lg));
+}
+
+/* border-radius */
+@utility rounded-input {
+  border-radius: var(--radius-input, var(--kateform-radius-input));
+}
+@utility rounded-l-input {
+  border-top-left-radius: var(--radius-input, var(--kateform-radius-input));
+  border-bottom-left-radius: var(--radius-input, var(--kateform-radius-input));
+}
+@utility rounded-r-input {
+  border-top-right-radius: var(--radius-input, var(--kateform-radius-input));
+  border-bottom-right-radius: var(--radius-input, var(--kateform-radius-input));
+}
+@utility rounded-t-input {
+  border-top-left-radius: var(--radius-input, var(--kateform-radius-input));
+  border-top-right-radius: var(--radius-input, var(--kateform-radius-input));
+}
+@utility rounded-b-input {
+  border-bottom-left-radius: var(--radius-input, var(--kateform-radius-input));
+  border-bottom-right-radius: var(--radius-input, var(--kateform-radius-input));
+}
+@utility rounded-tl-input {
+  border-top-left-radius: var(--radius-input, var(--kateform-radius-input));
+}
+@utility rounded-tr-input {
+  border-top-right-radius: var(--radius-input, var(--kateform-radius-input));
+}
+@utility rounded-bl-input {
+  border-bottom-left-radius: var(--radius-input, var(--kateform-radius-input));
+}
+@utility rounded-br-input {
+  border-bottom-right-radius: var(--radius-input, var(--kateform-radius-input));
+}
+
+/* font-weight */
+@utility font-normal {
+  font-weight: var(--font-weight-normal, 400);
+}
+@utility font-bold {
+  font-weight: var(--font-weight-bold, 700);
 }
 
 @utility text-placeholder {

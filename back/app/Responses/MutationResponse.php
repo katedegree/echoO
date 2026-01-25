@@ -50,14 +50,14 @@ class MutationResponse
     );
   }
 
-  public static function validation(array | Collection $messages): self
+  public static function validation(array | Collection $fieldErrors): self
   {
-    if ($messages instanceof Collection) {
-      $messages = $messages->toArray();
+    if ($fieldErrors instanceof Collection) {
+      $fieldErrors = $fieldErrors->toArray();
     }
     return new self(
       MutationResponseStatus::Validation,
-      ['messages' => $messages]
+      ['fieldErrors' => $fieldErrors]
     );
   }
 

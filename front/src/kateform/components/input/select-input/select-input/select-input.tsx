@@ -20,7 +20,6 @@ export interface SelectInputProps<T extends string | number>
   isDisabled?: boolean;
   isReadOnly?: boolean;
   onReadOnly?: () => void;
-  errorMessage?: string;
   startContent?: React.ReactNode;
   endContent?: React.ReactNode;
   actionContent?: (isOpen: boolean) => React.ReactNode;
@@ -36,7 +35,6 @@ export function SelectInput<T extends string | number>({
   isDisabled = false,
   isReadOnly = false,
   onReadOnly,
-  errorMessage,
   startContent,
   endContent,
   actionContent = (isOpen) => <SelectChevronIcon isOpen={isOpen} />,
@@ -64,7 +62,6 @@ export function SelectInput<T extends string | number>({
       label={label}
       isDisabled={isDisabled}
       isReadOnly={isReadOnly}
-      errorMessage={errorMessage}
       onReadOnly={onReadOnly}
     >
       <div ref={wrapperRef}>

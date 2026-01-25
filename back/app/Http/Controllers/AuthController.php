@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
+  public const TOKEN_KEY = 'accessToken';
+
   public function register(AuthRegisterRequest $request)
   {
     $name = $request->input('name');
@@ -29,7 +31,7 @@ class AuthController extends Controller
     });
 
     return MutationResponse::success('ユーザー登録が完了しました。')
-      ->with('accessToken', $user->createToken('accessToken')->plainTextToken)
+      ->with('accessToken', $user->createToken(self::TOKEN_KEY)->plainTextToken)
       ->json();
   }
 
@@ -40,12 +42,12 @@ class AuthController extends Controller
 
     $user = User::where('email', $email)->first();
 
-    if (!Hash::check($password, $user->password)) {
+    if (!$user || !Hash::check($password, $user->password)) {
       return MutationResponse::error('メールアドレスまたはパスワードが違います。')->json();
     }
 
     return MutationResponse::success('ログインに成功しました。')
-      ->with('accessToken', $user->createToken('accessToken')->plainTextToken)
+      ->with('accessToken', $user->createToken(self::TOKEN_KEY)->plainTextToken)
       ->json();
   }
 }

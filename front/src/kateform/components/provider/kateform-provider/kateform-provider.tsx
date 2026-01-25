@@ -62,7 +62,6 @@ type KateFormProviderProps = DeepPartial<{
   };
   radius: {
     input: string; // kateform-radius-input
-    form: string; // kateform-radius-form
   };
 }>;
 
@@ -121,11 +120,10 @@ export function KateFormProvider({
   const spacingLg = spacing?.lg;
 
   const radiusInput = radius?.input;
-  const radiusForm = radius?.form;
 
   const setCSSVariables = (
     root: HTMLElement,
-    map: Record<string, string | undefined>
+    map: Record<string, string | undefined>,
   ) => {
     Object.entries(map).forEach(([key, value]) => {
       if (value) root.style.setProperty(key, value);
@@ -141,7 +139,7 @@ export function KateFormProvider({
 
   useEffect(() => {
     const root = document.documentElement;
-    setCSSVariables(root, {
+    (setCSSVariables(root, {
       "--kateform-color-light-label": lightLabelColor,
       "--kateform-color-light-value": lightValueColor,
       "--kateform-color-light-option": lightOptionColor,
@@ -164,7 +162,7 @@ export function KateFormProvider({
       "--kateform-color-dark-bordered": darkBorderedColor,
       "--kateform-color-dark-bordered-hover": darkBorderedHoverColor,
     }),
-      [color];
+      [color]);
   });
 
   useEffect(() => {
@@ -189,7 +187,6 @@ export function KateFormProvider({
     const root = document.documentElement;
     setCSSVariables(root, {
       "--kateform-radius-input": radiusInput,
-      "--kateform-radius-form": radiusForm,
     });
   }, [radius]);
 

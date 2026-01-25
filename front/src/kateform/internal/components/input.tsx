@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { cn } from "@kateform/internal/utils";
+import { cn } from "@kateform/utils";
 
 export interface InputProps extends Omit<React.ComponentProps<"input">, "id"> {
   id: string;
@@ -13,7 +13,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       className={cn(
         "w-full outline-none autofill:bg-transparent bg-clip-text",
         "placeholder:text-placeholder caret-value [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-value)]",
-        props.className
+        props.className,
       )}
       ref={ref}
     />
