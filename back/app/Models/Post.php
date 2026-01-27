@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Post extends Model
@@ -17,9 +18,14 @@ class Post extends Model
     'is_public' => 'boolean',
   ];
 
+  public function user(): BelongsTo
+  {
+    return $this->belongsTo(User::class);
+  }
+
   public function likedUsers(): BelongsToMany
   {
-    return $this->belongsToMany(User::class, 'likes');
+    return $this->belongsToMany(User::class, 'post_likes');
   }
 
   public function media(): BelongsToMany

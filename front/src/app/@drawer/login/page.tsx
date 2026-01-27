@@ -7,38 +7,46 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useError } from "@kateform/hooks";
-import {
-  accessToken,
-  addToast,
-  fetchMutation,
-  MutationResponse,
-} from "@/utils";
+import { accessToken, addToast } from "@/utils";
 import { useForm } from "react-hook-form";
+import { MUTATION_STATUS } from "@/constants";
+import { useMeStore } from "@/stores";
 import {
-  AuthLoginRequest,
+  authLogin,
   AuthLoginResponse,
+  authMe,
+  authRegister,
   AuthRegisterRequest,
   AuthRegisterResponse,
-} from "@/types";
-import { MUTATION_STATUS } from "@/constants";
+} from "@/lib/api";
+import { mutate } from "swr";
+import { MutationResponse } from "@/lib/fetch-mutation";
 
 export default function () {
   const router = useRouter();
   const pathname = usePathname();
   const { register, getValues, handleSubmit } = useForm<AuthRegisterRequest>();
   const { setErrors } = useError();
+  const { setMe } = useMeStore();
   const [mode, setMode] = useState<"login" | "register" | null>(null);
   const [showTruck, setShowTruck] = useState(true);
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
-  const handleAuth = (
+  const handleAuth = async (
     res: MutationResponse<AuthLoginResponse | AuthRegisterResponse>,
   ) => {
     switch (res.status) {
       case MUTATION_STATUS.SUCCESS:
         accessToken.set(res.accessToken);
-        addToast("success", res.message);
-        router.push("/");
+        const { key, fetcher } = authMe();
+
+        const result = await mutate(key, fetcher(), { revalidate: true });
+
+        if (result?.data) {
+          setMe(result.data);
+          addToast("success", res.message);
+          router.push("/");
+        }
         break;
       case MUTATION_STATUS.ERROR:
         addToast("error", res.message);
@@ -51,28 +59,29 @@ export default function () {
 
   const handleLogin = () => {
     const values = getValues();
-    fetchMutation<AuthLoginRequest, AuthLoginResponse>("POST", "/auth/login", {
+    const { fetcher } = authLogin({
       email: values.email,
       password: values.password,
-    }).then(handleAuth);
+    });
+    fetcher().then(handleAuth);
   };
 
   const handleRegister = () => {
     const values = getValues();
+    const { fetcher } = authRegister({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+    });
     if (values.password !== passwordConfirm) {
       setErrors({ passwordConfirm: "パスワードが一致しません" });
       return;
     }
-    fetchMutation<AuthRegisterRequest, AuthRegisterResponse>(
-      "POST",
-      "/auth/register",
-      values,
-    ).then(handleAuth);
+    fetcher().then(handleAuth);
   };
 
   useEffect(() => {
     if (pathname !== "/login") {
-      setMode(null);
       return;
     }
     const updateModeFromURL = () => {
@@ -97,14 +106,15 @@ export default function () {
 
   return (
     <Drawer
-      isOpen={mode !== null}
+      isOpen={pathname === "/login"}
       onClose={() => {
         setMode(null);
         router.push("/");
       }}
       placement="bottom"
+      zIndex={60}
     >
-      <form className="flex flex-col justify-center bg-canvas rounded-t-base py-xl px-lg outline-2 outline-t outline-primary">
+      <form className="flex flex-col justify-center bg-base rounded-t-base py-xl px-lg outline-2 outline-t outline-accent">
         <Image
           className="w-[200px] h-auto mx-auto pb-lg"
           src="/logo-dark.png"
@@ -185,7 +195,7 @@ export default function () {
         <div className="pt-xl flex flex-col items-center gap-md">
           <div className="relative">
             <button
-              className="py-md rounded-base border-2 border-primary hover:border-primary-hover text-white w-[200px] flex justify-center items-center cursor-pointer"
+              className="py-md rounded-base border-2 border-accent hover:border-accent-hover text-white w-[200px] flex justify-center items-center cursor-pointer"
               onClick={handleSubmit(
                 mode === "login" ? handleLogin : handleRegister,
               )}

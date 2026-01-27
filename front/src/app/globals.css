@@ -11,29 +11,25 @@
   ---color-default-red: oklch(71.2% 0.194 13.428); /* Rose-400 */
 
   /* light color */
-  --color-canvas: oklch(98.5% 0.002 247.839); /* Gray-50 */
-  --color-glass: oklch(13% 0.028 261.692); /* Gray-950 */
+  --color-bg-base: oklch(98.5% 0.002 247.839); /* Gray-50 */
+  --color-bg-main: var(--color-default-white);
+  --color-bg-main-hover: var(--color-default-white-hover);
   --color-text-base: var(--color-default-black);
-  --color-text-hover: var(--color-default-black-hover);
+  --color-text-base-hover: var(--color-default-black-hover);
   --color-text-label: var(--color-default-black);
-  --color-bg-base: var(--color-default-white);
-  --color-bg-hover: var(--color-default-white-hover);
-  --color-border-base: var(--color-default-black);
 }
 
 .dark {
-  --color-canvas: oklch(13% 0.028 261.692); /* Gray-950 */
-  --color-glass: oklch(98.5% 0.002 247.839); /* Gray-50 */
+  --color-bg-base: oklch(13% 0.028 261.692); /* Gray-950 */
+  --color-bg-main: var(--color-default-black);
+  --color-bg-main-hover: var(--color-default-black-hover);
   --color-text-base: var(--color-default-white);
-  --color-text-hover: var(--color-default-white-hover);
+  --color-text-base-hover: var(--color-default-white-hover);
   --color-text-label: var(--color-default-white);
-  --color-bg-base: var(--color-default-black);
-  --color-bg-hover: var(--color-default-black-hover);
-  --color-border-base: var(--color-default-white);
 }
 
 html {
-  background-color: var(--color-canvas);
+  background-color: var(--color-bg-base);
 }
 
 @theme {
@@ -41,10 +37,17 @@ html {
   --color-white: var(--color-default-white);
   --color-black: var(--color-default-black);
   --color-red: var(--color-default-red);
-  --color-primary: oklch(58.8% 0.158 241.966);
-  --color-primary-hover: oklch(68.5% 0.169 237.323);
+
+  /* コンテンツ背景色 */
+  --color-main: var(--color-bg-main);
+  --color-main-hover: var(--color-bg-main-hover);
+  /* アクセントカラー */
+  --color-accent: oklch(58.8% 0.158 241.966);
+  --color-accent-hover: oklch(68.5% 0.169 237.323);
+  /* ステータスカラー */
   --color-success: oklch(58.8% 0.158 241.966);
   --color-error: oklch(79.5% 0.184 86.047);
+  --color-like: oklch(71.2% 0.194 13.428);
 
   --spacing-0: 0;
   --spacing-1: 1px;
@@ -57,32 +60,30 @@ html {
 
   --text-sm: 0.875rem;
   --text-md: 1rem;
+  --text-lg: 1.125rem;
+
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
 }
 
-@utility text-base {
-  color: var(--color-text-base);
-}
-
-@utility text-hover {
-  color: var(--color-text-hover);
+@utility text-base-hover {
+  color: var(--color-text-base-hover);
 }
 
 @utility text-label {
   color: var(--color-text-label);
 }
 
+/* base系 */
 @utility bg-base {
   background-color: var(--color-bg-base);
 }
-
-@utility bg-hover {
-  background-color: var(--color-bg-hover);
+@utility text-base {
+  color: var(--color-text-base);
 }
-
-@utility bg-canvas {
-  background-color: var(--color-canvas);
-}
-
 @utility border-base {
-  border-color: var(--color-text-base);
+  border-color: var(--color-bg-base);
+}
+@utility outline-base {
+  outline-color: var(--color-bg-base);
 }

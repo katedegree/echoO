@@ -8,6 +8,29 @@ export function useSidebar() {
   const holdTimerRef = useRef<number | null>(null);
   const sidebarRef = useRef<HTMLDivElement | null>(null);
 
+  const sidebarVariants = (side: "left" | "right") => ({
+    hidden: {
+      opacity: 0,
+      x: side === "left" ? -50 : 50,
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.2,
+        ease: "easeOut",
+      } as const,
+    },
+    exit: {
+      opacity: 0,
+      x: side === "left" ? -40 : 40,
+      transition: {
+        duration: 0.15,
+        ease: "easeIn",
+      } as const,
+    },
+  });
+
   useEffect(() => {
     let scrollTimer: number | null = null;
     const onScroll = (e: Event) => {
@@ -76,5 +99,5 @@ export function useSidebar() {
     };
   }, []);
 
-  return { isShow, sidebarRef };
+  return { isShow, sidebarVariants, sidebarRef };
 }

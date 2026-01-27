@@ -1,6 +1,6 @@
-import { accessToken } from "./access-token";
+import { accessToken } from "@/utils/access-token";
 
-export type QueryResponse<T extends object = {}, Extra extends object = {}> = {
+export type QueryResponse<T extends object, Extra extends object> = {
   data: T;
 } & Extra;
 
@@ -8,7 +8,7 @@ export function fetchQuery<
   TReq extends object = {},
   TRes extends object = {},
   Extra extends object = {},
->(path: string, req: TReq): Promise<QueryResponse<TRes, Extra>> {
+>(path: string, req?: TReq): Promise<QueryResponse<TRes, Extra>> {
   let url = `${process.env.NEXT_PUBLIC_API_URL}${path}`;
   const token = accessToken.get();
 

@@ -15,7 +15,7 @@ return new class extends Migration
       $table->unsignedBigInteger('user_id')->primary();
       $table->unsignedBigInteger('icon_media_id')->nullable();
       $table->string('name', 50);
-      $table->string('bio', 160)->nullable();
+      $table->string('bio', 160)->default('');
       $table->timestamps();
 
       $table->foreign('user_id')

@@ -14,7 +14,7 @@ export function Toast({ type, message }: ToastProps) {
   return (
     <div
       className={cn(
-        "bg-base rounded-base p-lg w-[calc(100vw-var(--spacing-xl))] border",
+        "bg-main rounded-base p-lg w-[calc(100vw-var(--spacing-xl))] border",
         type === "success" ? "border-success" : "border-error",
       )}
     >

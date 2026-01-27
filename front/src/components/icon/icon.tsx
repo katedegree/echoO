@@ -3,6 +3,7 @@ import {
   ChevronsRight,
   CircleUserRound,
   DoorOpenIcon,
+  Heart,
   House,
   LockKeyhole,
   Mail,
@@ -22,6 +23,7 @@ const icons = {
   user: CircleUserRound,
   password: LockKeyhole,
   refresh: RefreshCw,
+  heart: Heart,
 } as const;
 
 interface Props {

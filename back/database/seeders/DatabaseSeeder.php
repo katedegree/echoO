@@ -82,7 +82,7 @@ class DatabaseSeeder extends Seeder
           ]
         ],
       ];
-      $likes = [
+      $postLikes = [
         [
           'user_id' => 1,
           'post_id' => 1
@@ -94,6 +94,20 @@ class DatabaseSeeder extends Seeder
         [
           'user_id' => 3,
           'post_id' => 1
+        ],
+      ];
+      $userLikes = [
+        [
+          'liker_user_id' => 2,
+          'liked_user_id' => 1,
+          'updated_at' => now(),
+          'created_at' => now(),
+        ],
+        [
+          'liker_user_id' => 3,
+          'liked_user_id' => 1,
+          'updated_at' => now(),
+          'created_at' => now(),
         ],
       ];
 
@@ -124,7 +138,8 @@ class DatabaseSeeder extends Seeder
           $createdPost->media()->createMany($media);
         }
       }
-      DB::table('likes')->insert($likes);
+      DB::table('post_likes')->insert($postLikes);
+      DB::table('user_likes')->insert($userLikes);
     });
   }
 }

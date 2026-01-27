@@ -6,6 +6,7 @@ use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthRegisterRequest;
 use App\Models\User;
 use App\Responses\MutationResponse;
+use App\Responses\QueryResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
@@ -49,5 +50,21 @@ class AuthController extends Controller
     return MutationResponse::success('ログインに成功しました。')
       ->with('accessToken', $user->createToken(self::TOKEN_KEY)->plainTextToken)
       ->json();
+  }
+
+  public function me()
+  {
+    $user = request()->user()->load([
+      'profile.iconMedia',
+      'likedPosts:id',
+    ]);
+    $me = [
+      'id' => $user->id,
+      'name' => $user->profile->name,
+      'iconUrl' => $user->profile?->iconMedia->url ?? null,
+      'likedPostIds' => $user->likedPosts->pluck('id')->toArray(),
+    ];
+
+    return QueryResponse::success($me)->json();
   }
 }

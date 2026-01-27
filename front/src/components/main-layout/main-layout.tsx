@@ -9,6 +9,11 @@ import { useSidebarStore } from "@/stores/use-sidebar-store";
 import { cn } from "@kateform/utils";
 import { useRouter } from "next/navigation";
 import { Toast, ToastType } from "../toast/toast";
+import { useMeStore } from "@/stores";
+import { useEffect } from "react";
+import Image from "next/image";
+import useSWR from "swr";
+import { authMe, AuthMeResponse } from "@/lib/api";
 
 interface Props {
   children: React.ReactNode;
@@ -16,31 +21,27 @@ interface Props {
 
 export function MainLayout({ children }: Props) {
   const router = useRouter();
-  const { sidebarRef, isShow } = useSidebar();
+  const { sidebarRef, isShow, sidebarVariants } = useSidebar();
+  const { me, setMe } = useMeStore();
   const { sidebarPos, toggleSidebar } = useSidebarStore();
 
-  const sidebarVariants = (side: "left" | "right") => ({
-    hidden: {
-      opacity: 0,
-      x: side === "left" ? -50 : 50,
+  const { key, fetcher } = authMe();
+  const { data } = useSWR<AuthMeResponse | null>(
+    key,
+    () => fetcher().then(({ data }) => data),
+    {
+      onError: (err) => {
+        console.warn(err);
+      },
+      fallbackData: null,
     },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.2,
-        ease: "easeOut",
-      } as const,
-    },
-    exit: {
-      opacity: 0,
-      x: side === "left" ? -40 : 40,
-      transition: {
-        duration: 0.15,
-        ease: "easeIn",
-      } as const,
-    },
-  });
+  );
+
+  useEffect(() => {
+    if (data !== undefined) {
+      setMe(data);
+    }
+  }, [data, setMe]);
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark">
@@ -67,7 +68,7 @@ export function MainLayout({ children }: Props) {
               <motion.nav
                 key={`nav-${sidebarPos}`}
                 className={cn(
-                  "fixed top-1/2 w-fit h-fit text-base bg-base",
+                  "fixed top-1/2 w-fit h-fit text-base bg-main z-50",
                   sidebarPos === "left"
                     ? "left-0 pl-sm rounded-r-base"
                     : "right-0 pr-sm rounded-l-base",
@@ -77,7 +78,7 @@ export function MainLayout({ children }: Props) {
                 animate="visible"
                 exit="exit"
               >
-                <div className="relative *:cursor-pointer flex flex-col *:p-md gap-md py-md">
+                <div className="relative *:cursor-pointer flex flex-col gap-md py-md *:w-[44px] *:h-[44px] *:flex *:items-center *:justify-center">
                   <button onClick={() => router.push("/")}>
                     <Icon name="home" />
                   </button>
@@ -88,17 +89,30 @@ export function MainLayout({ children }: Props) {
                     <Icon name="post" />
                   </button>
 
-                  <div className="absolute bg-base aspect-square flex items-center justify-center rounded-base top-full mt-sm">
-                    <button onClick={() => router.push("/login")}>
+                  <button
+                    className="absolute bg-main aspect-square rounded-base top-full mt-sm overflow-hidden"
+                    onClick={() =>
+                      router.push(me ? `/profile?id=${me.id}` : "/login")
+                    }
+                  >
+                    {me ? (
+                      <Image
+                        className="w-full h-full"
+                        src={me.iconUrl || "/default-avatar.png"}
+                        alt="icon"
+                        width={32}
+                        height={32}
+                      />
+                    ) : (
                       <Icon name="login" />
-                    </button>
-                  </div>
+                    )}
+                  </button>
                 </div>
               </motion.nav>
               <motion.button
                 key={`button-${sidebarPos}`}
                 className={cn(
-                  "fixed top-1/2 bg-base p-md rounded-base",
+                  "fixed top-1/2 bg-main p-md rounded-base z-50",
                   sidebarPos === "left" ? "mr-sm right-0" : "ml-sm left-0",
                 )}
                 onClick={() => toggleSidebar()}

@@ -1,3 +1,6 @@
 export * from "./auth-login"
 export * from "./auth-me"
 export * from "./auth-register"
+export * from "./post-index"
+export * from "./post-like"
+export * from "./user-show"

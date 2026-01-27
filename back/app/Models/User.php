@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -46,6 +47,27 @@ class User extends Authenticatable
       'email_verified_at' => 'datetime',
       'password' => 'hashed',
     ];
+  }
+
+  public function likedPosts(): BelongsToMany
+  {
+    return $this->belongsToMany(
+      Post::class,
+      'post_likes',
+      'user_id',
+      'post_id'
+    );
+  }
+
+  // NOTE: いいねしたユーザー
+  public function likedUsers(): BelongsToMany
+  {
+    return $this->belongsToMany(
+      User::class,
+      'user_likes',
+      'liker_user_id',
+      'liked_user_id'
+    );
   }
 
   public function profile(): HasOne
