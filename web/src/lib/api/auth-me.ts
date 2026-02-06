@@ -1,4 +1,5 @@
-import { fetchQuery } from "../fetch-query";
+import { fetchApi } from "@/utils";
+import { QueryResponse } from "../query-response";
 
 export interface AuthMeResponse {
   id: number;
@@ -10,6 +11,6 @@ export interface AuthMeResponse {
 export function authMe() {
   return {
     key: ["auth", "me"],
-    fetcher: () => fetchQuery<{}, AuthMeResponse>("/auth/me"),
+    fetcher: (): Promise<QueryResponse<AuthMeResponse>> => fetchApi("GET", "/auth/me"),
   };
 }

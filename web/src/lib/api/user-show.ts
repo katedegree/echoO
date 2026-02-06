@@ -1,4 +1,4 @@
-import { fetchQuery } from "../fetch-query";
+import { fetchApi } from "@/utils";
 
 export interface UserShowResponse {
   id: number;
@@ -11,6 +11,6 @@ export interface UserShowResponse {
 export function userShow(id: number) {
   return {
     key: ["user", id] as const,
-    fetcher: () => fetchQuery<{}, UserShowResponse>(`/users/${id}`),
+    fetcher: (): Promise<UserShowResponse> => fetchApi("GET", `/users/${id}`),
   };
 }

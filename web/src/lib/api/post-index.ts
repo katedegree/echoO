@@ -1,4 +1,5 @@
-import { fetchQuery } from "../fetch-query";
+import { fetchApi } from "@/utils";
+import { QueryResponse } from "../query-response";
 
 export interface PostIndexRequest {
   limit: number;
@@ -18,17 +19,19 @@ export interface PostIndexResponse {
 }
 [];
 
-export interface PostIndexExtra {
-  total: number;
-}
-
-export function postIndex(req: PostIndexRequest, pageIndex?: number) {
+export function postIndex() {
   return {
-    key: ["posts", req.userId, pageIndex] as const,
-    fetcher: () =>
-      fetchQuery<PostIndexRequest, PostIndexResponse, PostIndexExtra>(
-        "/posts",
-        req,
-      ),
+    key: ["posts"] as const,
+    infiniteKey: (userId: number | null) => ["posts", userId] as const,
+    fetcher: (
+      req: PostIndexRequest,
+    ): Promise<
+      QueryResponse<
+        PostIndexResponse,
+        {
+          total: number;
+        }
+      >
+    > => fetchApi("GET", "/posts", req),
   };
 }

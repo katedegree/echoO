@@ -1,4 +1,5 @@
-import { fetchMutation } from "../fetch-mutation";
+import { fetchApi } from "@/utils";
+import { MutationResponse } from "../mutation-response";
 
 export interface AuthRegisterRequest {
   name: string;
@@ -6,17 +7,12 @@ export interface AuthRegisterRequest {
   password: string;
 }
 
-export interface AuthRegisterResponse {
-  accessToken: string;
-}
-
-export function authRegister(req: AuthRegisterRequest) {
+export function authRegister() {
   return {
-    fetcher: () =>
-      fetchMutation<AuthRegisterRequest, AuthRegisterResponse>(
-        "POST",
-        "/auth/register",
-        req,
-      ),
+    fetcher: (req: AuthRegisterRequest): Promise<
+      MutationResponse<{
+        accessToken: string;
+      }>
+    > => fetchApi("POST", "/auth/register", req),
   };
 }

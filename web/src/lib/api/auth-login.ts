@@ -1,21 +1,17 @@
-import { fetchMutation } from "../fetch-mutation";
+import { fetchApi } from "@/utils";
+import { MutationResponse } from "../mutation-response";
 
 export interface AuthLoginRequest {
   email: string;
   password: string;
 }
 
-export interface AuthLoginResponse {
-  accessToken: string;
-}
-
-export function authLogin(req: AuthLoginRequest) {
+export function authLogin() {
   return {
-    fetcher: () =>
-      fetchMutation<AuthLoginRequest, AuthLoginResponse>(
-        "POST",
-        "/auth/login",
-        req,
-      ),
+    fetcher: (req: AuthLoginRequest): Promise<
+      MutationResponse<{
+        accessToken: string;
+      }>
+    > => fetchApi("POST", "/auth/login", req),
   };
 }

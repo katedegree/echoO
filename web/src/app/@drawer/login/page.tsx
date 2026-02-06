@@ -13,28 +13,25 @@ import { MUTATION_STATUS } from "@/constants";
 import { useMeStore } from "@/stores";
 import {
   authLogin,
-  AuthLoginResponse,
+  AuthLoginRequest,
   authMe,
   authRegister,
   AuthRegisterRequest,
-  AuthRegisterResponse,
 } from "@/lib/api";
 import { mutate } from "swr";
-import { MutationResponse } from "@/lib/fetch-mutation";
+import { MutationResponse } from "@/lib/mutation-response";
 
 export default function () {
   const router = useRouter();
   const pathname = usePathname();
-  const { register, getValues, handleSubmit } = useForm<AuthRegisterRequest>();
+  const { register, handleSubmit } = useForm<AuthRegisterRequest>();
   const { setErrors } = useError();
   const { setMe } = useMeStore();
   const [mode, setMode] = useState<"login" | "register" | null>(null);
   const [showTruck, setShowTruck] = useState(true);
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
-  const handleAuth = async (
-    res: MutationResponse<AuthLoginResponse | AuthRegisterResponse>,
-  ) => {
+  const handleAuth = async (res: MutationResponse<{ accessToken: string }>) => {
     switch (res.status) {
       case MUTATION_STATUS.SUCCESS:
         accessToken.set(res.accessToken);
@@ -57,27 +54,18 @@ export default function () {
     }
   };
 
-  const handleLogin = () => {
-    const values = getValues();
-    const { fetcher } = authLogin({
-      email: values.email,
-      password: values.password,
-    });
-    fetcher().then(handleAuth);
+  const handleLogin = (values: AuthLoginRequest) => {
+    const { fetcher } = authLogin();
+    fetcher(values).then(handleAuth);
   };
 
-  const handleRegister = () => {
-    const values = getValues();
-    const { fetcher } = authRegister({
-      name: values.name,
-      email: values.email,
-      password: values.password,
-    });
+  const handleRegister = (values: AuthRegisterRequest) => {
+    const { fetcher } = authRegister();
     if (values.password !== passwordConfirm) {
       setErrors({ passwordConfirm: "パスワードが一致しません" });
       return;
     }
-    fetcher().then(handleAuth);
+    fetcher(values).then(handleAuth);
   };
 
   useEffect(() => {

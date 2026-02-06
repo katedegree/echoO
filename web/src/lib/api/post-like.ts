@@ -1,4 +1,4 @@
-import { fetchMutation } from "../fetch-mutation";
+import { fetchApi } from "@/utils";
 
 export interface PostLikeResponse {
   id: number;
@@ -11,7 +11,7 @@ export interface PostLikeResponse {
 
 export function postLike(postId: number) {
   return {
-    fetcher: () =>
-      fetchMutation<{}, PostLikeResponse>("POST", `/posts/${postId}/like`),
+    fetcher: (): Promise<PostLikeResponse> =>
+      fetchApi("POST", `/posts/${postId}/like`),
   };
 }
