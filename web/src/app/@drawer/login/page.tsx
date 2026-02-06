@@ -114,7 +114,7 @@ export default function () {
       placement="bottom"
       zIndex={60}
     >
-      <form className="flex flex-col justify-center bg-base rounded-t-base py-xl px-lg outline-2 outline-t outline-accent">
+      <form className="flex flex-col justify-center bg-base rounded-t-base py-xl px-lg outline-2 outline-accent">
         <Image
           className="w-[200px] h-auto mx-auto pb-lg"
           src="/logo-dark.png"
@@ -195,7 +195,7 @@ export default function () {
         <div className="pt-xl flex flex-col items-center gap-md">
           <div className="relative">
             <button
-              className="py-md rounded-base border-2 border-accent hover:border-accent-hover text-white w-[200px] flex justify-center items-center cursor-pointer"
+              className="py-md rounded-base border-2 border-accent hover:border-accent-hover text-base w-[200px] flex justify-center items-center cursor-pointer"
               onClick={handleSubmit(
                 mode === "login" ? handleLogin : handleRegister,
               )}

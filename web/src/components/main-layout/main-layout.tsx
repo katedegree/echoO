@@ -85,7 +85,7 @@ export function MainLayout({ children }: Props) {
                   <button>
                     <Icon name="message" />
                   </button>
-                  <button>
+                  <button onClick={() => router.push("/post")}>
                     <Icon name="post" />
                   </button>
 

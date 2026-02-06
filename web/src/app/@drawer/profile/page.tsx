@@ -96,7 +96,7 @@ export default function () {
 
         <div className="relative -mt-[50vw] z-20 px-xl">
           <div className="flex justify-between">
-            <p className="sticky top-xl text-[24px] font-bold">{user.name}</p>
+            <p className="text-[24px] font-bold">{user.name}</p>
             <p className="text-md">
               総いいね数: <span className="text-lg">{user.likesCount}</span>
             </p>
@@ -109,7 +109,7 @@ export default function () {
               className="border-b border-[color-mix(in_srgb,var(--color-bg-base),var(--color-text-base))] p-lg"
               key={post.id}
             >
-              <div className="grid grid-cols-2 rounded-base overflow-hidden">
+              <div className="grid grid-cols-2 rounded-base overflow-hidden gap-sm">
                 {post.media.map((media, index) => {
                   const isVideo = media
                     ? /\.(mp4|mov|webm|ogg)$/i.test(media.url)
