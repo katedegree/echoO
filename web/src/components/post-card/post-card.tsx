@@ -5,6 +5,7 @@ import { useMeStore } from "@/stores";
 import { postLike } from "@/lib/api";
 import { MUTATION_STATUS } from "@/constants";
 import { addToast } from "@/utils";
+import { useState } from "react";
 
 interface Props {
   id: number;
@@ -19,21 +20,33 @@ interface Props {
 
 export function PostCard({ id, content, media, likesCount }: Props) {
   const { me, setMe } = useMeStore();
+  const isLiked = (me?.likedPostIds ?? []).includes(id);
+  const [optimisticIncrement, setOptimisticIncrement] = useState(0);
 
   const handlePostLike = (postId: number) => {
-    if (!me) return;
+    if (!me || isLiked) return;
+
+    // 楽観的更新
+    setMe({
+      ...me,
+      likedPostIds: [...me.likedPostIds, postId],
+    });
+    setOptimisticIncrement(1);
+
     const { fetcher } = postLike(postId);
     fetcher().then((res) => {
       switch (res.status) {
         case MUTATION_STATUS.SUCCESS:
           addToast("success", res.message);
-          setMe({
-            ...me,
-            likedPostIds: [...me.likedPostIds, postId],
-          });
           break;
         case MUTATION_STATUS.ERROR:
           addToast("error", res.message);
+          // ロールバック
+          setMe({
+            ...me,
+            likedPostIds: me.likedPostIds.filter((id) => id !== postId),
+          });
+          setOptimisticIncrement(0);
           break;
       }
     });
@@ -74,17 +87,12 @@ export function PostCard({ id, content, media, likesCount }: Props) {
       <button
         className={cn(
           "bg-main w-fit min-w-[120px] flex items-center justify-center gap-md cursor-pointer mx-auto mr-xl py-sm rounded-base mt-md",
-          (me?.likedPostIds ?? []).includes(id) && "bg-like",
+          isLiked && "bg-like",
         )}
-        onClick={() => {
-          if (me?.likedPostIds.includes(id)) {
-            return;
-          }
-          handlePostLike(id);
-        }}
+        onClick={() => handlePostLike(id)}
       >
         <Icon name="heart" />
-        <span className="text-lg font-bold">{likesCount}</span>
+        <span className="text-lg font-bold">{likesCount + optimisticIncrement}</span>
       </button>
     </div>
   );
