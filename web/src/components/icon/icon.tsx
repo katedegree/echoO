@@ -9,6 +9,7 @@ import {
   Mail,
   MessageCircle,
   RefreshCw,
+  Settings,
   SquarePlus,
 } from "lucide-react";
 
@@ -24,20 +25,15 @@ const icons = {
   password: LockKeyhole,
   refresh: RefreshCw,
   heart: Heart,
+  setting: Settings
 } as const;
 
 interface Props {
-  size?: "sm" | "md" | "lg";
+  size?: number;
   name: keyof typeof icons;
 }
 
-const sizeMap = {
-  sm: 16,
-  md: 24,
-  lg: 32,
-} as const;
-
-export function Icon({ size = "md", name }: Props) {
+export function Icon({ size = 24, name }: Props) {
   const IconComponent = icons[name];
-  return <IconComponent size={sizeMap[size]} />;
+  return <IconComponent size={size} />;
 }

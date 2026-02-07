@@ -9,5 +9,6 @@ services:
     build: ./api
     volumes:
       - ./api:/api
+      - ./api/php.ini:/usr/local/etc/php/php.ini
     ports:
       - 8080:8000

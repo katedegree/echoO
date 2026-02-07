@@ -22,7 +22,12 @@ export interface PostIndexResponse {
 export function postIndex() {
   return {
     key: ["posts"] as const,
-    infiniteKey: (userId: number | null) => ["posts", userId] as const,
+    infiniteKey:
+      (userId: number | null) =>
+      (pageIndex: number, previousPageData: PostIndexResponse[] | null) => {
+        if (previousPageData && !previousPageData.length) return null;
+        return ["posts", userId, pageIndex] as const;
+      },
     fetcher: (
       req: PostIndexRequest,
     ): Promise<

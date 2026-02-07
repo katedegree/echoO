@@ -68,7 +68,7 @@ export function InputWrapper<T>({
           <div className="absolute inset-0 hover:cursor-not-allowed" />
         )}
       </motion.div>
-      <p className={cn("h-lh pt-1 text-sm text-error", !error && "opacity-0")}>
+      <p className={cn("h-lh pt-1 text-sm text-error w-0 whitespace-nowrap", !error && "opacity-0")}>
         {error}
       </p>
     </div>

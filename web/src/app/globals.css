@@ -47,7 +47,6 @@ html {
   /* ステータスカラー */
   --color-success: oklch(58.8% 0.158 241.966);
   --color-error: oklch(79.5% 0.184 86.047);
-  --color-like: oklch(71.2% 0.194 13.428);
 
   --spacing-0: 0;
   --spacing-1: 1px;
@@ -86,4 +85,35 @@ html {
 }
 @utility outline-base {
   outline-color: var(--color-bg-base);
+}
+
+@utility bg-glass {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+@utility bg-gradient {
+  position: relative;
+  isolation: isolate; 
+
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image: radial-gradient(
+      circle 320px at 70% 80%,
+      oklch(29.3% 0.066 243.157),
+      transparent 50%
+    );
+    filter: blur(40px);
+  }
+}
+
+@utility bg-like {
+  @apply bg-linear-to-br from-[oklch(90.5%_0.182_98.111)] to-[oklch(55.4%_0.135_66.442)];
 }

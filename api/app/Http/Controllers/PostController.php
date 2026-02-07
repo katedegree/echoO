@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\Responses\MutationResponse;
 use App\Responses\QueryResponse;
+use App\Services\WNService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -56,10 +57,17 @@ class PostController extends Controller
   public function store(PostStoreRequest $request)
   {
     $user = $request->user();
+    $wnService = new WNService($request->input('lat'), $request->input('lng'));
+    $isPublic = !$wnService->isRain();
 
-    DB::transaction(function () use ($user, $request) {
+    if ($request->boolean('isPublic') !== $isPublic) {
+      return MutationResponse::error('投稿に失敗しました。')->json(422);
+    }
+
+    DB::transaction(function () use ($user, $request, $isPublic) {
       $post = $user->posts()->create([
         'content' => $request->input('content'),
+        'is_public' => $isPublic,
       ]);
 
       $post->media()->attach($request->input('mediaIds'));

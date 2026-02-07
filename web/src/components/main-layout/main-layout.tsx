@@ -10,10 +10,13 @@ import { cn } from "@kateform/utils";
 import { useRouter } from "next/navigation";
 import { Toast, ToastType } from "../toast/toast";
 import { useMeStore } from "@/stores";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import useSWR from "swr";
 import { authMe, AuthMeResponse } from "@/lib/api";
+import { PostDrawer } from "../post-drawer/post-drawer";
+import { Header } from "../header/header";
+import { Footer } from "../footer/footer";
 
 interface Props {
   children: React.ReactNode;
@@ -24,6 +27,7 @@ export function MainLayout({ children }: Props) {
   const { sidebarRef, isShow, sidebarVariants } = useSidebar();
   const { me, setMe } = useMeStore();
   const { sidebarPos, toggleSidebar } = useSidebarStore();
+  const [isOpen, setIsOpen] = useState(false);
 
   const { key, fetcher } = authMe();
   const { data } = useSWR<AuthMeResponse | null>(
@@ -59,6 +63,7 @@ export function MainLayout({ children }: Props) {
           },
         }}
       >
+        <Header />
         <ToastProvider<ToastType> component={Toast} placement="top-center" />
         <main>{children}</main>
 
@@ -68,7 +73,7 @@ export function MainLayout({ children }: Props) {
               <motion.nav
                 key={`nav-${sidebarPos}`}
                 className={cn(
-                  "fixed top-1/2 w-fit h-fit text-base bg-main z-50",
+                  "fixed top-1/2 w-fit h-fit text-base bg-main/70 z-50",
                   sidebarPos === "left"
                     ? "left-0 pl-sm rounded-r-base"
                     : "right-0 pr-sm rounded-l-base",
@@ -85,12 +90,12 @@ export function MainLayout({ children }: Props) {
                   <button>
                     <Icon name="message" />
                   </button>
-                  <button onClick={() => router.push("/post")}>
+                  <button onClick={() => setIsOpen(true)}>
                     <Icon name="post" />
                   </button>
 
                   <button
-                    className="absolute bg-main aspect-square rounded-base top-full mt-sm overflow-hidden"
+                    className="absolute bg-main/70 aspect-square rounded-base top-full mt-sm overflow-hidden"
                     onClick={() =>
                       router.push(me ? `/profile?id=${me.id}` : "/login")
                     }
@@ -112,7 +117,7 @@ export function MainLayout({ children }: Props) {
               <motion.button
                 key={`button-${sidebarPos}`}
                 className={cn(
-                  "fixed top-1/2 bg-main p-md rounded-base z-50",
+                  "fixed top-1/2 bg-main/70 p-md rounded-base z-50",
                   sidebarPos === "left" ? "mr-sm right-0" : "ml-sm left-0",
                 )}
                 onClick={() => toggleSidebar()}
@@ -132,6 +137,8 @@ export function MainLayout({ children }: Props) {
             </div>
           )}
         </AnimatePresence>
+        <PostDrawer isOpen={isOpen} onClose={() => setIsOpen(false)} />
+        <Footer />
       </KateFormProvider>
     </ThemeProvider>
   );

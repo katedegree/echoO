@@ -1,4 +1,5 @@
 import { fetchApi } from "@/utils";
+import { MutationResponse } from "../mutation-response";
 
 export interface PostLikeResponse {
   id: number;
@@ -11,7 +12,7 @@ export interface PostLikeResponse {
 
 export function postLike(postId: number) {
   return {
-    fetcher: (): Promise<PostLikeResponse> =>
+    fetcher: (): Promise<MutationResponse<PostLikeResponse>> =>
       fetchApi("POST", `/posts/${postId}/like`),
   };
 }

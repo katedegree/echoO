@@ -236,7 +236,7 @@ export default function () {
               }}
               type="button"
             >
-              <Icon size="lg" name="refresh" />
+              <Icon size={32} name="refresh" />
             </button>
           </div>
         </div>

@@ -23,8 +23,11 @@ class PostStoreRequest extends FormRequest
   {
     return [
       'content' => ['required', 'string'],
-      'mediaIds' => ['required', 'array'],
+      'mediaIds' => ['nullable', 'array'],
       'mediaIds.*' => ['integer', 'exists:media,id'],
+      'isPublic' => ['required', 'boolean'],
+      'lat' => ['required', 'numeric'],
+      'lng' => ['required', 'numeric'],
     ];
   }
 
@@ -33,10 +36,15 @@ class PostStoreRequest extends FormRequest
     return [
       'content.required' => '投稿内容を入力してください。',
       'content.string' => '投稿内容は文字列で入力してください。',
-      'mediaIds.required' => 'メディアを選択してください。',
       'mediaIds.array' => 'メディアの形式が正しくありません。',
       'mediaIds.*.integer' => 'メディアの形式が正しくありません。',
       'mediaIds.*.exists' => '選択されたメディアが見つかりません。',
+      'isPublic.required' => '公開設定が選択されていません。',
+      'isPublic.boolean' => '公開設定の形式が正しくありません。',
+      'lat.required' => '位置情報を取得できませんでした。',
+      'lat.numeric' => '位置情報の形式が正しくありません。',
+      'lng.required' => '位置情報を取得できませんでした。',
+      'lng.numeric' => '位置情報の形式が正しくありません。',
     ];
   }
 }
