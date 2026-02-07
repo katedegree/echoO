@@ -27,6 +27,8 @@ Route::prefix('auth')->group(function () {
   Route::post('/login', [AuthController::class, 'login']);
 });
 
-Route::prefix('posts')->group(function () {
-  Route::get('/', [PostController::class, 'index']);
+Route::middleware('auth.optional')->group(function () {
+  Route::prefix('posts')->group(function () {
+    Route::get('/', [PostController::class, 'index']);
+  });
 });

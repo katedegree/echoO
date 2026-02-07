@@ -19,6 +19,8 @@ class PostController extends Controller
     $offset = $request->input('offset');
     $userId = $request->input('userId');
 
+    $me = $request->user();
+
     $posts = User::query()
       ->when($userId, fn($q) => $q->where('id', $userId))
       ->whereNotNull('posted_at')
@@ -32,23 +34,35 @@ class PostController extends Controller
       ->when($limit, fn($q) => $q->limit($limit))
       ->when($offset, fn($q) => $q->offset($offset))
       ->get()
-      ->map(function (User $user) {
-        // posted_atがnullでない場合、必ず投稿が存在する
-        $latestPost = $user->posts->first();
-        $likesCount = $user->posts->sum('liked_users_count');
+      ->flatMap(function (User $user) use ($me, $userId) {
+        $isMe = $me && $me->id === $user->id;
 
-        return [
-          'id' => $latestPost->id,
-          'content' => $latestPost->content,
-          'media' => $latestPost->media->map(function ($media) {
-            return [
+        if ($isMe && $userId) {
+          return $user->posts->map(fn($post) => [
+            'id' => $post->id,
+            'content' => $post->content,
+            'media' => $post->media->map(fn($media) => [
               'id' => $media->id,
               'label' => $media->label,
               'url' => $media->url,
-            ];
-          }),
+            ]),
+            'likesCount' => $post->liked_users_count,
+          ]);
+        }
+
+        $latestPost = $user->posts->first();
+        $likesCount = $user->posts->sum('liked_users_count');
+
+        return [[
+          'id' => $latestPost->id,
+          'content' => $latestPost->content,
+          'media' => $latestPost->media->map(fn($media) => [
+            'id' => $media->id,
+            'label' => $media->label,
+            'url' => $media->url,
+          ]),
           'likesCount' => $likesCount,
-        ];
+        ]];
       });
 
     return QueryResponse::success($posts)->json();
