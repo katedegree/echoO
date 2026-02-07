@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostStoreRequest;
 use App\Models\Post;
 use App\Models\User;
 use App\Responses\MutationResponse;
@@ -52,6 +53,23 @@ class PostController extends Controller
     return QueryResponse::success($posts)->json();
   }
 
+  public function store(PostStoreRequest $request)
+  {
+    $user = $request->user();
+
+    DB::transaction(function () use ($user, $request) {
+      $post = $user->posts()->create([
+        'content' => $request->input('content'),
+      ]);
+
+      $post->media()->attach($request->input('mediaIds'));
+
+      $user->update(['posted_at' => now()]);
+    });
+
+    return MutationResponse::success('投稿しました。')->json(201);
+  }
+
   public function like($id)
   {
     $user = request()->user();
@@ -69,8 +87,8 @@ class PostController extends Controller
       ->with('user', [
         'id' => $post->user->id,
         'name' => $post->user->profile->name,
-        'iconUrl' => $post->user->profile->media?->url
+        'iconUrl' => $post->user->profile->iconMedia?->url
       ])
-      ->json();
+      ->json(201);
   }
 }

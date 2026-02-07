@@ -24,6 +24,6 @@ return Application::configure(basePath: dirname(__DIR__))
         })
         ->toArray();
 
-      return MutationResponse::validation($messages)->json();
+      return MutationResponse::validation($messages)->json(422);
     });
   })->create();

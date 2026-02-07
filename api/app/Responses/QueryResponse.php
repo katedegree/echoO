@@ -6,8 +6,6 @@ use Illuminate\Http\JsonResponse;
 
 class QueryResponse
 {
-  private const HTTP_OK = 200;
-
   protected array $data;
 
   private function __construct(mixed $data)
@@ -26,8 +24,8 @@ class QueryResponse
     return $this;
   }
 
-  public function json(): JsonResponse
+  public function json(int $code = 200): JsonResponse
   {
-    return response()->json($this->data, self::HTTP_OK);
+    return response()->json($this->data, $code);
   }
 }

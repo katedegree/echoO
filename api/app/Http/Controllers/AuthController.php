@@ -33,7 +33,7 @@ class AuthController extends Controller
 
     return MutationResponse::success('ユーザー登録が完了しました。')
       ->with('accessToken', $user->createToken(self::TOKEN_KEY)->plainTextToken)
-      ->json();
+      ->json(201);
   }
 
   public function login(AuthLoginRequest $request)
@@ -44,12 +44,12 @@ class AuthController extends Controller
     $user = User::where('email', $email)->first();
 
     if (!$user || !Hash::check($password, $user->password)) {
-      return MutationResponse::error('メールアドレスまたはパスワードが違います。')->json();
+      return MutationResponse::error('メールアドレスまたはパスワードが違います。')->json(401);
     }
 
     return MutationResponse::success('ログインに成功しました。')
       ->with('accessToken', $user->createToken(self::TOKEN_KEY)->plainTextToken)
-      ->json();
+      ->json(200);
   }
 
   public function me()

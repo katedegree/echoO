@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -13,7 +14,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/{id}', [UserController::class, 'show']);
   });
   Route::prefix('posts')->group(function () {
+    Route::post('/', [PostController::class, 'store']);
     Route::post('/{id}/like', [PostController::class, 'like']);
+  });
+  Route::prefix('media')->group(function () {
+    Route::post('/', [MediaController::class, 'store']);
   });
 });
 

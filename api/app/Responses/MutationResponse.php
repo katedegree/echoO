@@ -10,15 +10,6 @@ enum MutationResponseStatus: string
   case Success = 'success';
   case Error = 'error';
   case Validation = 'validation';
-
-  public function httpCode(): int
-  {
-    return match ($this) {
-      self::Success => 200,
-      self::Error => 500,
-      self::Validation => 422,
-    };
-  }
 }
 
 class MutationResponse
@@ -67,11 +58,11 @@ class MutationResponse
     return $this;
   }
 
-  public function json(): JsonResponse
+  public function json(int $code): JsonResponse
   {
     return response()->json(
       collect(['status' => $this->status->value])->merge($this->data),
-      $this->status->httpCode()
+      $code
     );
   }
 }
