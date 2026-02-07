@@ -3,11 +3,12 @@
 import { MUTATION_STATUS } from "@/constants";
 import { mediaStore } from "@/lib/api/media-store";
 import { postStore, PostStoreRequest } from "@/lib/api/post-store";
-import { useMeStore, useSidebarStore } from "@/stores";
+import { useSidebarStore } from "@/stores";
 import { addToast } from "@/utils";
 import { Drawer, MultiMediaInput, TextareaInput } from "@kateform/components";
 import { useError } from "@kateform/hooks";
 import { cn } from "@kateform/utils";
+import { useScrollLock } from "@/app/@drawer/use-scroll-lock";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -17,6 +18,7 @@ interface Porps {
 }
 
 export function PostDrawer({ isOpen, onClose }: Porps) {
+  useScrollLock(isOpen);
   const { register, handleSubmit, getValues, setValue, reset } =
     useForm<PostStoreRequest>({
       defaultValues: {

@@ -17,6 +17,7 @@ import { authMe, AuthMeResponse } from "@/lib/api";
 import { PostDrawer } from "../post-drawer/post-drawer";
 import { Header } from "../header/header";
 import { Footer } from "../footer/footer";
+import { set } from "react-hook-form";
 
 interface Props {
   children: React.ReactNode;
@@ -42,10 +43,15 @@ export function MainLayout({ children }: Props) {
   );
 
   useEffect(() => {
-    if (data !== undefined) {
+    if (data) {
       setMe(data);
     }
+    if (data === null) {
+      setMe(null);
+    }
   }, [data, setMe]);
+
+  if (me === undefined) return;
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark">

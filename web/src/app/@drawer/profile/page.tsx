@@ -9,6 +9,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
+import { useScrollLock } from "../use-scroll-lock";
 
 const DEFAULT_LIMIT = 20;
 
@@ -17,6 +18,9 @@ export default function () {
   const router = useRouter();
   const pathname = usePathname();
   const [userId, setId] = useState<number | null>(null);
+
+  const isOpen = pathname === "/profile";
+  useScrollLock(isOpen);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -54,16 +58,18 @@ export default function () {
 
   return (
     <Drawer
-      isOpen={pathname === "/profile"}
+      isOpen={isOpen}
       placement="right"
       onClose={() => router.push("/")}
       zIndex={30}
     >
-      <div className="fixed top-xl right-xl z-50 cursor-pointer">
-        <Icon name="setting" size={36} />
-      </div>
-      <div ref={scrollRef} className="relative w-screen bg-base h-screen max-h-screen overflow-y-auto bg-gradient">
-        {/* 背景: ユーザー情報（フロースペースを取らない） */}
+      <div
+        ref={scrollRef}
+        className="relative w-screen bg-base h-screen max-h-screen overflow-y-auto bg-gradient"
+      >
+        <div className="absolute top-xl right-xl z-50 cursor-pointer">
+          <Icon name="setting" size={36} />
+        </div>
         <div className="absolute inset-x-0 top-0 z-0">
           <div className="relative">
             <Image

@@ -6,8 +6,7 @@ export interface PostLikeResponse {
   user: {
     id: number;
     name: string;
-    iconUrl: string | null;
-  };
+  } | null;
 }
 
 export function postLike(postId: number) {

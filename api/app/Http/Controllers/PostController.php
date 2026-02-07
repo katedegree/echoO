@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PostStoreRequest;
+use App\Models\Message;
 use App\Models\Post;
 use App\Models\User;
 use App\Responses\MutationResponse;
@@ -103,13 +104,20 @@ class PostController extends Controller
       $user->likedUsers()->syncWithoutDetaching([
         $post->user_id => ['updated_at' => now()],
       ]);
+
+      if ($post->is_public && $user->id !== $post->user_id) {
+        Message::create([
+          'sender_user_id' => $user->id,
+          'receiver_user_id' => $post->user_id,
+          'content' => 'いいねしました！',
+        ]);
+      }
     });
 
     return MutationResponse::success('いいねしました。')
-      ->with('user', [
+      ->with('user', $post->is_public ? null : [
         'id' => $post->user->id,
         'name' => $post->user->profile->name,
-        'iconUrl' => $post->user->profile->iconMedia?->url
       ])
       ->json(201);
   }

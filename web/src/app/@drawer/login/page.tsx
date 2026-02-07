@@ -20,10 +20,13 @@ import {
 } from "@/lib/api";
 import { mutate } from "swr";
 import { MutationResponse } from "@/lib/mutation-response";
+import { useScrollLock } from "../use-scroll-lock";
 
 export default function () {
   const router = useRouter();
   const pathname = usePathname();
+  const isOpen = pathname === "/login";
+  useScrollLock(isOpen);
   const { register, handleSubmit } = useForm<AuthRegisterRequest>();
   const { setErrors } = useError();
   const { setMe } = useMeStore();
@@ -94,7 +97,7 @@ export default function () {
 
   return (
     <Drawer
-      isOpen={pathname === "/login"}
+      isOpen={isOpen}
       onClose={() => {
         setMode(null);
         router.push("/");
