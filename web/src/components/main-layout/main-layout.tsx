@@ -90,7 +90,15 @@ export function MainLayout({ children }: Props) {
                   <button>
                     <Icon name="message" />
                   </button>
-                  <button onClick={() => setIsOpen(true)}>
+                  <button
+                    onClick={() => {
+                      if (!me) {
+                        router.push("/login");
+                        return;
+                      }
+                      setIsOpen(true);
+                    }}
+                  >
                     <Icon name="post" />
                   </button>
 
