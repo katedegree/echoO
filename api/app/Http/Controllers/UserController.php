@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
+use App\Responses\MutationResponse;
 use App\Responses\QueryResponse;
 use Illuminate\Http\Request;
 
@@ -33,5 +35,22 @@ class UserController extends Controller
     ];
 
     return QueryResponse::success($me)->json();
+  }
+
+  public function update(UserUpdateRequest $request)
+  {
+    $user = $request->user();
+
+    if ($request->filled('email')) {
+      $user->update(['email' => $request->input('email')]);
+    }
+
+    $user->profile()->update(array_filter([
+      'name' => $request->input('name'),
+      'bio' => $request->input('bio'),
+      'icon_media_id' => $request->input('iconId'),
+    ], fn($value) => $value !== null));
+
+    return MutationResponse::success('プロフィールを更新しました。')->json(200);
   }
 }

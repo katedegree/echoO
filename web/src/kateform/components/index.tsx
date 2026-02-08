@@ -2,6 +2,7 @@ import "./globals.css";
 
 // form系
 export * from "./form/drawer/drawer";
+export * from "./form/modal/modal";
 
 // input系
 export * from "./input/file-input/media-input/media-input";

@@ -4,6 +4,7 @@ import { QueryResponse } from "../query-response";
 export interface AuthMeResponse {
   id: number;
   name: string;
+  bio: string;
   iconUrl: string | null;
   likedPostIds: number[];
 }

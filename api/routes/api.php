@@ -12,6 +12,7 @@ Route::middleware('auth:sanctum')->group(function () {
   });
   Route::prefix('users')->group(function () {
     Route::get('/{id}', [UserController::class, 'show']);
+    Route::patch('/', [UserController::class, 'update']);
   });
   Route::prefix('posts')->group(function () {
     Route::post('/', [PostController::class, 'store']);

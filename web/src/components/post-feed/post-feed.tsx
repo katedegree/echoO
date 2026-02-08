@@ -13,6 +13,7 @@ interface Post {
     url: string;
   }[];
   likesCount: number;
+  isPublic: boolean;
 }
 
 interface Props {

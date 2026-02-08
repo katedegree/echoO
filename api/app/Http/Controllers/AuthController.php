@@ -61,6 +61,7 @@ class AuthController extends Controller
     $me = [
       'id' => $user->id,
       'name' => $user->profile->name,
+      'bio' => $user->profile->bio ?? '',
       'iconUrl' => $user->profile?->iconMedia->url ?? null,
       'likedPostIds' => $user->likedPosts->pluck('id')->toArray(),
     ];

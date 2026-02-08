@@ -16,6 +16,7 @@ export interface PostIndexResponse {
     url: string;
   }[];
   likesCount: number;
+  isPublic: boolean;
 }
 [];
 

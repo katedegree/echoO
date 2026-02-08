@@ -16,9 +16,16 @@ interface Props {
     url: string;
   }[];
   likesCount: number;
+  isPublic?: boolean;
 }
 
-export function PostCard({ id, content, media, likesCount }: Props) {
+export function PostCard({
+  id,
+  content,
+  media,
+  likesCount,
+  isPublic = true,
+}: Props) {
   const { me, setMe } = useMeStore();
   const isLiked = (me?.likedPostIds ?? []).includes(id);
   const [optimisticIncrement, setOptimisticIncrement] = useState(0);
@@ -53,7 +60,15 @@ export function PostCard({ id, content, media, likesCount }: Props) {
   };
 
   return (
-    <div className="bg-glass rounded-base p-lg" key={id}>
+    <div className="bg-glass rounded-base p-lg relative" key={id}>
+      {!isPublic && (
+        <>
+          <div className="absolute top-md right-md">
+            <Icon name="password" size={28} />
+          </div>
+          <div className="h-[52px]" />
+        </>
+      )}
       <div className="grid grid-cols-2 rounded-base overflow-hidden gap-sm">
         {media.map((media, index) => {
           const isVideo = media
@@ -92,7 +107,9 @@ export function PostCard({ id, content, media, likesCount }: Props) {
         onClick={() => handlePostLike(id)}
       >
         <Icon name="heart" />
-        <span className="text-lg font-bold">{likesCount + optimisticIncrement}</span>
+        <span className="text-lg font-bold">
+          {likesCount + optimisticIncrement}
+        </span>
       </button>
     </div>
   );

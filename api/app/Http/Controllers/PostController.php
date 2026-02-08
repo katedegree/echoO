@@ -48,6 +48,7 @@ class PostController extends Controller
               'url' => $media->url,
             ]),
             'likesCount' => $post->liked_users_count,
+            'isPublic' => $post->is_public,
           ]);
         }
 
@@ -63,6 +64,7 @@ class PostController extends Controller
             'url' => $media->url,
           ]),
           'likesCount' => $likesCount,
+          'isPublic' => $latestPost->is_public,
         ]];
       });
 

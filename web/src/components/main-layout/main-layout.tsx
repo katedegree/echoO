@@ -17,7 +17,6 @@ import { authMe, AuthMeResponse } from "@/lib/api";
 import { PostDrawer } from "../post-drawer/post-drawer";
 import { Header } from "../header/header";
 import { Footer } from "../footer/footer";
-import { set } from "react-hook-form";
 
 interface Props {
   children: React.ReactNode;
@@ -31,25 +30,20 @@ export function MainLayout({ children }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   const { key, fetcher } = authMe();
-  const { data } = useSWR<AuthMeResponse | null>(
+  const { data, isLoading } = useSWR<AuthMeResponse | null>(
     key,
-    () => fetcher().then(({ data }) => data),
+    () => fetcher().then(({ data }) => data || null),
     {
-      onError: (err) => {
-        console.warn(err);
+      onError: () => {
+        setMe(null);
       },
-      fallbackData: null,
     },
   );
 
   useEffect(() => {
-    if (data) {
-      setMe(data);
-    }
-    if (data === null) {
-      setMe(null);
-    }
-  }, [data, setMe]);
+    if (isLoading) return;
+    setMe(data ?? null);
+  }, [data, isLoading, setMe]);
 
   if (me === undefined) return;
 
@@ -70,7 +64,7 @@ export function MainLayout({ children }: Props) {
         }}
       >
         <Header />
-        <ToastProvider<ToastType> component={Toast} placement="top-center" />
+        <ToastProvider<ToastType> component={Toast} placement="bottom-center" />
         <main>{children}</main>
 
         <AnimatePresence mode="wait">

@@ -1,3 +1,4 @@
+import { s } from "framer-motion/client";
 import {
   ChevronsLeft,
   ChevronsRight,
@@ -12,6 +13,7 @@ import {
   Settings,
   SquarePlus,
 } from "lucide-react";
+import { Spinner } from "./svgs/spinner";
 
 const icons = {
   home: House,
@@ -25,7 +27,8 @@ const icons = {
   password: LockKeyhole,
   refresh: RefreshCw,
   heart: Heart,
-  setting: Settings
+  setting: Settings,
+  spinner: Spinner,
 } as const;
 
 interface Props {
