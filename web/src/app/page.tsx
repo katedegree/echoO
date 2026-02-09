@@ -10,17 +10,16 @@ export default function () {
   const { infiniteKey, fetcher } = postIndex();
   const { data } = useSWRInfinite(
     infiniteKey(null),
-    async ([_, _userId, pageIndex]) => {
-      const response = await fetcher({
+    async ([_, _userId, cursor]) => {
+      return await fetcher({
         limit: DEFAULT_LIMIT,
-        offset: pageIndex * DEFAULT_LIMIT,
+        cursor,
         userId: null,
       });
-      return response.data;
     },
   );
 
-  const posts = data ? data.flatMap((page) => page) : [];
+  const posts = data ? data.flatMap((page) => page.data) : [];
 
   return (
     <div className="px-xl">

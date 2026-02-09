@@ -14,9 +14,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import useSWR from "swr";
 import { authMe, AuthMeResponse } from "@/lib/api";
+import { isRain } from "@/lib/api/israin";
 import { PostDrawer } from "../post-drawer/post-drawer";
 import { Header } from "../header/header";
 import { Footer } from "../footer/footer";
+import { MediaModal } from "../media-modal/meida-modal";
 
 interface Props {
   children: React.ReactNode;
@@ -45,7 +47,18 @@ export function MainLayout({ children }: Props) {
     setMe(data ?? null);
   }, [data, isLoading, setMe]);
 
-  if (me === undefined) return;
+  useEffect(() => {
+    if (!me) return;
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { fetcher } = isRain();
+      fetcher({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      });
+    });
+  }, [me]);
+
+  // if (me === undefined) return;
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark">
@@ -64,7 +77,7 @@ export function MainLayout({ children }: Props) {
         }}
       >
         <Header />
-        <ToastProvider<ToastType> component={Toast} placement="bottom-center" />
+        <ToastProvider<ToastType> component={Toast} placement="top-center" />
         <main>{children}</main>
 
         <AnimatePresence mode="wait">
@@ -109,13 +122,14 @@ export function MainLayout({ children }: Props) {
                     }
                   >
                     {me ? (
-                      <Image
-                        className="w-full h-full"
-                        src={me.iconUrl || "/default-avatar.png"}
-                        alt="icon"
-                        width={32}
-                        height={32}
-                      />
+                      <div className="w-full h-full">
+                        <Image
+                          className="object-cover"
+                          src={me.iconUrl || "/default-avatar.png"}
+                          alt="icon"
+                          fill
+                        />
+                      </div>
                     ) : (
                       <Icon name="login" />
                     )}
@@ -146,6 +160,7 @@ export function MainLayout({ children }: Props) {
           )}
         </AnimatePresence>
         <PostDrawer isOpen={isOpen} onClose={() => setIsOpen(false)} />
+        <MediaModal />
         <Footer />
       </KateFormProvider>
     </ThemeProvider>

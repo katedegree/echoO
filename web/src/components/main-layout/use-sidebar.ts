@@ -45,9 +45,12 @@ export function useSidebar() {
         }
       }, 100);
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("scroll", onScroll, {
+      passive: true,
+      capture: true,
+    });
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", onScroll, { capture: true });
       if (scrollTimer !== null) window.clearTimeout(scrollTimer);
     };
   }, [isTouching]);

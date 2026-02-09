@@ -3,7 +3,7 @@ import { QueryResponse } from "../query-response";
 
 export interface PostIndexRequest {
   limit: number;
-  offset: number;
+  cursor: string | null;
   userId: number | null;
 }
 
@@ -18,26 +18,26 @@ export interface PostIndexResponse {
   likesCount: number;
   isPublic: boolean;
 }
-[];
+
+type PostIndexPageData = QueryResponse<
+  PostIndexResponse[],
+  { cursor: string | null }
+>;
 
 export function postIndex() {
   return {
     key: ["posts"] as const,
     infiniteKey:
       (userId: number | null) =>
-      (pageIndex: number, previousPageData: PostIndexResponse[] | null) => {
-        if (previousPageData && !previousPageData.length) return null;
-        return ["posts", userId, pageIndex] as const;
+      (
+        _pageIndex: number,
+        previousPageData: PostIndexPageData | null,
+      ) => {
+        if (previousPageData && !previousPageData.data.length) return null;
+        const cursor = previousPageData?.cursor ?? null;
+        return ["posts", userId, cursor] as const;
       },
-    fetcher: (
-      req: PostIndexRequest,
-    ): Promise<
-      QueryResponse<
-        PostIndexResponse,
-        {
-          total: number;
-        }
-      >
-    > => fetchApi("GET", "/posts", req),
+    fetcher: (req: PostIndexRequest): Promise<PostIndexPageData> =>
+      fetchApi("GET", "/posts", req),
   };
 }

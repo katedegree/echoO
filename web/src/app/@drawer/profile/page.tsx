@@ -43,20 +43,19 @@ export default function () {
     // size,
     // setSize,
     // isLoading,
-  } = useSWRInfinite(infiniteKey(userId), async ([_, _userId, pageIndex]) => {
-    const response = await postIndexFetcher({
+  } = useSWRInfinite(infiniteKey(userId), async ([_, _userId, cursor]) => {
+    return await postIndexFetcher({
       limit: DEFAULT_LIMIT,
-      offset: pageIndex * DEFAULT_LIMIT,
+      cursor,
       userId,
     });
-    return response.data;
   });
 
   const user = userShowData?.data;
   const isMe = me && userId === me.id;
   const name = isMe ? me.name : user?.name;
   const iconUrl = isMe ? me.iconUrl : user?.iconUrl;
-  const posts = postIndexData ? postIndexData.flatMap((page) => page) : [];
+  const posts = postIndexData ? postIndexData.flatMap((page) => page.data) : [];
 
   if (!user) return null;
 
@@ -82,13 +81,12 @@ export default function () {
             <Icon name="setting" size={36} />
           </div>
           <div className="absolute inset-x-0 top-0 z-0">
-            <div className="relative">
+            <div className="relative w-screen h-[100vw]">
               <Image
-                className="w-screen h-[100vw]"
+                className="object-cover"
                 src={iconUrl ?? "/default-avatar.png"}
                 alt="avatar"
-                width={200}
-                height={200}
+                fill
               />
               <div className="absolute top-0 w-full h-[100vw] bg-radial-[circle_at_50%_50%] from-transparent via-transparent to-(--color-bg-base)" />
               <div className="absolute top-0 w-full h-[100vw] bg-linear-to-b from-transparent to-(--color-bg-base)" />

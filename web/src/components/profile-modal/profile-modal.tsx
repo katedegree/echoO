@@ -110,15 +110,31 @@ export function ProfileModal({ isOpen, onClose, user }: Props) {
         className="bg-base w-[calc(100vw-var(--spacing-xl))] p-xl rounded-base flex flex-col items-center"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <input className="hidden" id="iconUrl" type="file" accept="image/*" onChange={onUpload} />
+        <input
+          className="hidden"
+          id="iconUrl"
+          type="file"
+          accept="image/*"
+          onChange={onUpload}
+        />
         <label
           htmlFor="iconUrl"
           className="block relative w-[200px] h-[200px] rounded-full overflow-hidden"
         >
           {previewUrl ? (
-            <Image src={previewUrl} fill alt="Profile" />
+            <Image
+              src={previewUrl}
+              fill
+              alt="Profile"
+              className="object-cover"
+            />
           ) : (
-            <Image src="/default-avatar.png" fill alt="Default Profile" />
+            <Image
+              src="/default-avatar.png"
+              fill
+              alt="Default Profile"
+              className="object-cover"
+            />
           )}
           {isUploading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/40">

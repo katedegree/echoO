@@ -2,10 +2,12 @@ import { cn } from "@kateform/utils";
 import Image from "next/image";
 import { Icon } from "../icon/icon";
 import { useMeStore } from "@/stores";
-import { postLike } from "@/lib/api";
+import { likeStore } from "@/lib/api";
 import { MUTATION_STATUS } from "@/constants";
 import { addToast } from "@/utils";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMediaModalStore } from "@/stores/use-media-modal-store";
 
 interface Props {
   id: number;
@@ -26,12 +28,20 @@ export function PostCard({
   likesCount,
   isPublic = true,
 }: Props) {
+  const router = useRouter();
   const { me, setMe } = useMeStore();
+  const { open } = useMediaModalStore();
   const isLiked = (me?.likedPostIds ?? []).includes(id);
   const [optimisticIncrement, setOptimisticIncrement] = useState(0);
 
   const handlePostLike = (postId: number) => {
-    if (!me || isLiked) return;
+    if (isLiked) return;
+
+    if (!me) {
+      addToast("error", "ログインしてください");
+      router.push("/login");
+      return;
+    }
 
     // 楽観的更新
     setMe({
@@ -39,22 +49,17 @@ export function PostCard({
       likedPostIds: [...me.likedPostIds, postId],
     });
     setOptimisticIncrement(1);
+    addToast("success", "いいねしました。");
 
-    const { fetcher } = postLike(postId);
+    const { fetcher } = likeStore({ postId });
     fetcher().then((res) => {
-      switch (res.status) {
-        case MUTATION_STATUS.SUCCESS:
-          addToast("success", res.message);
-          break;
-        case MUTATION_STATUS.ERROR:
-          addToast("error", res.message);
-          // ロールバック
-          setMe({
-            ...me,
-            likedPostIds: me.likedPostIds.filter((id) => id !== postId),
-          });
-          setOptimisticIncrement(0);
-          break;
+      if (res.status === MUTATION_STATUS.ERROR) {
+        addToast("error", res.message);
+        setMe({
+          ...me,
+          likedPostIds: me.likedPostIds.filter((id) => id !== postId),
+        });
+        setOptimisticIncrement(0);
       }
     });
   };
@@ -70,29 +75,28 @@ export function PostCard({
         </>
       )}
       <div className="grid grid-cols-2 rounded-base overflow-hidden gap-sm">
-        {media.map((media, index) => {
-          const isVideo = media
-            ? /\.(mp4|mov|webm|ogg)$/i.test(media.url)
-            : false;
+        {media.map((m, i) => {
+          const isVideo = media ? /\.(mp4|mov|webm|ogg)$/i.test(m.url) : false;
 
           return (
             <div
-              key={`${media.id}-${index}`}
+              key={`${m.id}-${i}`}
               className="relative w-full aspect-square overflow-hidden"
+              onClick={() =>
+                open(
+                  media.map((m) => m.url),
+                  i,
+                )
+              }
             >
               {isVideo ? (
                 <video
-                  src={media.url}
+                  src={m.url}
                   controls
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full object-cover"
                 />
               ) : (
-                <Image
-                  src={media.url}
-                  alt="media"
-                  fill
-                  className="object-cover"
-                />
+                <Image src={m.url} alt="media" fill className="object-cover" />
               )}
             </div>
           );
