@@ -104,4 +104,24 @@ class DmController extends Controller
 
         return MutationResponse::success('メッセージを送信しました。')->json(201);
     }
+
+    public function read(Request $request, $userId)
+    {
+        $me = $request->user();
+
+        $unreadIds = Message::where('sender_user_id', $userId)
+            ->where('receiver_user_id', $me->id)
+            ->whereNotIn('id', DB::table('message_reads')->where('user_id', $me->id)->pluck('message_id'))
+            ->pluck('id');
+
+        if ($unreadIds->isNotEmpty()) {
+            $records = $unreadIds->map(fn ($id) => [
+                'user_id' => $me->id,
+                'message_id' => $id,
+            ]);
+            DB::table('message_reads')->insertOrIgnore($records->toArray());
+        }
+
+        return MutationResponse::success('既読にしました。')->json(200);
+    }
 }

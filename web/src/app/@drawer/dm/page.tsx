@@ -6,24 +6,25 @@ import { dmIndex, DmIndexResponse } from "@/lib/api/dm-index";
 import { dmShow } from "@/lib/api/dm-show";
 import { mediaStore } from "@/lib/api/media-store";
 import { QueryResponse } from "@/lib/query-response";
-import { useMediaModalStore, useMeStore } from "@/stores";
+import { useMeStore } from "@/stores";
 import { useDetailStore } from "@/stores/use-detail-store";
 import { addToast } from "@/utils";
 import { Drawer, MultiMediaInput, TextareaInput } from "@kateform/components";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
 import { useScrollLock } from "../use-scroll-lock";
 import { useForm } from "react-hook-form";
+import { dmRead } from "@/lib/api/dm-read";
 import { dmStore, DmStoreRequest } from "@/lib/api/dm-store";
+import { DmMessage } from "@/components/dm-message/dm-message";
 
 export default function () {
   const pathname = usePathname();
   const { me } = useMeStore();
   const { detail, pushDetail, closeDetail } = useDetailStore();
-  const { open } = useMediaModalStore();
 
   const { register, handleSubmit, reset } = useForm<DmStoreRequest>();
 
@@ -66,6 +67,12 @@ export default function () {
   const dmMessages = dmShowData
     ? dmShowData.flatMap((page) => page.data).reverse()
     : [];
+
+  useEffect(() => {
+    if (!userId) return;
+    const { fetcher } = dmRead(userId);
+    fetcher();
+  }, [userId]);
 
   const [mediaIds, setMediaIds] = useState<number[]>([]);
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
@@ -126,7 +133,7 @@ export default function () {
               </div>
               <div>
                 <p className="text-sm ine-clamp-1 pb-sm">{message.user.name}</p>
-                <p className="text-sm line-clamp-2">{message.content}</p>
+                <p className="text-sm line-clamp-2 break-all">{message.content}</p>
               </div>
             </div>
           ))}
@@ -170,82 +177,26 @@ export default function () {
 
         <div className="bg-base w-screen h-screen bg-gradient py-[100px] px-lg flex flex-col gap-md overflow-y-auto">
           {dmMessages.map((message) => (
-            <div key={message.id}>
-              {message.isMe ? (
-                <div className="flex gap-sm ml-auto w-fit max-w-[calc(100%-var(--spacing-xl))]">
-                  <div className="bg-glass rounded-base rounded-tr-none p-md">
-                    {message.media.length > 0 && (
-                      <div className="grid grid-cols-2 rounded-base overflow-hidden gap-sm mt-sm pb-md w-full">
-                        {message.media.map((url, i) => {
-                          const isVideo = /\.(mp4|mov|webm|ogg)$/i.test(url);
-
-                          return (
-                            <div
-                              key={`${url}-${i}`}
-                              className="relative aspect-square overflow-hidden"
-                              onClick={() => open(message.media, i)}
-                            >
-                              {isVideo ? (
-                                <video
-                                  src={url}
-                                  controls
-                                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full object-cover"
-                                />
-                              ) : (
-                                <Image
-                                  src={url}
-                                  alt="media"
-                                  fill
-                                  className="object-cover"
-                                />
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-
-                    <p className="whitespace-pre-wrap break-all">
-                      {message.content}
-                    </p>
-                  </div>
-                  <div
-                    className="relative w-[36px] h-[36px] rounded-full overflow-hidden shrink-0"
-                    onClick={() => {
-                      if (!me) return;
-                      pushDetail("/profile", me.id);
-                    }}
-                  >
-                    <Image
-                      className="object-cover"
-                      src={me?.iconUrl ?? "/default-avatar.png"}
-                      alt="avatar"
-                      fill
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="flex gap-sm mr-auto w-fit max-w-[calc(100%-var(--spacing-xl))]">
-                  <div
-                    className="relative w-[36px] h-[36px] rounded-full overflow-hidden shrink-0"
-                    onClick={() => {
-                      if (!user) return;
-                      pushDetail("/profile", user.id);
-                    }}
-                  >
-                    <Image
-                      className="object-cover"
-                      src={user?.iconUrl ?? "/default-avatar.png"}
-                      alt="avatar"
-                      fill
-                    />
-                  </div>
-                  <p className="bg-glass rounded-base rounded-tl-none p-md">
-                    {message.content}
-                  </p>
-                </div>
-              )}
-            </div>
+            <DmMessage
+              key={message.id}
+              content={message.content}
+              media={message.media}
+              isMe={message.isMe}
+              avatarUrl={
+                message.isMe
+                  ? me?.iconUrl ?? "/default-avatar.png"
+                  : user?.iconUrl ?? "/default-avatar.png"
+              }
+              onAvatarClick={() => {
+                if (message.isMe) {
+                  if (!me) return;
+                  pushDetail("/profile", me.id);
+                } else {
+                  if (!user) return;
+                  pushDetail("/profile", user.id);
+                }
+              }}
+            />
           ))}
         </div>
 

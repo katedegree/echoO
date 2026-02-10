@@ -38,6 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/', [DmController::class, 'index']);
     Route::get('/{userId}', [DmController::class, 'show']);
     Route::post('/', [DmController::class, 'store']);
+    Route::post('/{userId}/read', [DmController::class, 'read']);
   });
 });
 
