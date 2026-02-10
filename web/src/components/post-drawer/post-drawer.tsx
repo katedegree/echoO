@@ -3,13 +3,14 @@
 import { MUTATION_STATUS } from "@/constants";
 import { mediaStore } from "@/lib/api/media-store";
 import { postStore, PostStoreRequest } from "@/lib/api/post-store";
-import { useSidebarStore } from "@/stores";
+import { useSidebarStore, useWnStore } from "@/stores";
 import { addToast } from "@/utils";
 import { Drawer, MultiMediaInput, TextareaInput } from "@kateform/components";
 import { cn } from "@kateform/utils";
 import { useScrollLock } from "@/app/@drawer/use-scroll-lock";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Icon } from "../icon/icon";
 
 interface Porps {
   isOpen: boolean;
@@ -18,18 +19,23 @@ interface Porps {
 
 export function PostDrawer({ isOpen, onClose }: Porps) {
   useScrollLock(isOpen);
+  const { isRain } = useWnStore();
   const { register, handleSubmit, getValues, setValue, reset } =
     useForm<PostStoreRequest>({
       defaultValues: {
         content: "",
         mediaIds: [],
-        isPublic: true,
+        isPublic: !isRain,
         lat: 0,
         lng: 0,
       },
     });
   const { sidebarPos } = useSidebarStore();
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
+
+  useEffect(() => {
+    setValue("isPublic", !isRain);
+  }, [isRain, setValue]);
 
   useEffect(() => {
     if (isOpen) {
@@ -98,13 +104,14 @@ export function PostDrawer({ isOpen, onClose }: Porps) {
       <form className="relative bg-base rounded-t-base py-xl px-lg outline-2 outline-accent">
         <button
           className={cn(
-            "absolute bottom-full mb-md bg-base py-md w-[120px] rounded-base border-2 border-accent hover:border-accent-hover",
+            "absolute bottom-full mb-md bg-base py-md w-[160px] rounded-base border-2 border-accent hover:border-accent-hover flex items-center justify-center gap-md",
             sidebarPos === "left" ? "left-md" : "right-md",
           )}
           type="button"
           onClick={handleSubmit(onSubmit)}
         >
-          投稿する
+          <Icon name="send" size={20} />
+          {isRain ? "秘密を貯める" : "投稿する"}
         </button>
         <TextareaInput
           id="content"

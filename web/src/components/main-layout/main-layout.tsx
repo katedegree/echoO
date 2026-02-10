@@ -9,17 +9,19 @@ import { useSidebarStore } from "@/stores/use-sidebar-store";
 import { cn } from "@kateform/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { Toast, ToastType } from "../toast/toast";
-import { useMeStore, useWnStore } from "@/stores";
+import { useDmUnreadStore, useMeStore, useWnStore } from "@/stores";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import useSWR from "swr";
 import { authMe, AuthMeResponse } from "@/lib/api";
-import { isRain } from "@/lib/api/israin";
+import { wnIsRain } from "@/lib/api/wn-israin";
 import { useDetailStore } from "@/stores/use-detail-store";
 import { PostDrawer } from "../post-drawer/post-drawer";
 import { Header } from "../header/header";
 import { Footer } from "../footer/footer";
 import { MediaModal } from "../media-modal/meida-modal";
+import { addToast } from "@/utils";
+import { dmUnread } from "@/lib/api/dm-unread";
 
 interface Props {
   children: React.ReactNode;
@@ -64,6 +66,8 @@ export function MainLayout({ children }: Props) {
     },
   );
 
+  const { totalUnreadCount, setUnreadCounts } = useDmUnreadStore();
+
   useEffect(() => {
     if (isLoading) return;
     setMe(data ?? null);
@@ -71,16 +75,34 @@ export function MainLayout({ children }: Props) {
 
   useEffect(() => {
     if (!me) return;
+    const fetch = () => {
+      const { fetcher } = dmUnread();
+      fetcher().then((res) => setUnreadCounts(res.data));
+    };
+    fetch();
+    const id = setInterval(fetch, 60000);
+    return () => clearInterval(id);
+  }, [me?.id]);
+
+  useEffect(() => {
+    if (!me) return;
     navigator.geolocation.getCurrentPosition((position) => {
-      const { fetcher } = isRain();
+      const { fetcher } = wnIsRain();
       fetcher({
         lat: position.coords.latitude,
         lng: position.coords.longitude,
+      }).then((res) => {
+        wn.setIsRain(res.data.isRain);
+
+        if (res.data.isRain) {
+          addToast("success", "雨の日です。こっそり秘密の投稿しませんか？");
+        }
+        if (res.data.isPosted) {
+          addToast("success", "雨の日の投稿が公開されました、どうなるかな");
+        }
       });
     });
-  }, [me]);
-
-  // if (me === undefined) return;
+  }, [me?.id]);
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark">
@@ -138,7 +160,13 @@ export function MainLayout({ children }: Props) {
                           router.push("/dm");
                         }
                       }}
+                      className="relative"
                     >
+                      {totalUnreadCount > 0 && (
+                        <div className="absolute top-0 right-0 bg-like rounded-full w-[20px] h-[20px] flex items-center justify-center text-[12px]">
+                          {totalUnreadCount}
+                        </div>
+                      )}
                       <Icon name="message" />
                     </button>
                     <motion.button
@@ -225,7 +253,7 @@ export function MainLayout({ children }: Props) {
             )}
           </AnimatePresence>
         )}
-        
+
         <PostDrawer isOpen={isOpen} onClose={() => setIsOpen(false)} />
         <MediaModal />
         <Footer />

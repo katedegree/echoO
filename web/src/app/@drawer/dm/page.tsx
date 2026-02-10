@@ -6,7 +6,7 @@ import { dmIndex, DmIndexResponse } from "@/lib/api/dm-index";
 import { dmShow } from "@/lib/api/dm-show";
 import { mediaStore } from "@/lib/api/media-store";
 import { QueryResponse } from "@/lib/query-response";
-import { useMeStore } from "@/stores";
+import { useDmUnreadStore, useMeStore } from "@/stores";
 import { useDetailStore } from "@/stores/use-detail-store";
 import { addToast } from "@/utils";
 import { Drawer, MultiMediaInput, TextareaInput } from "@kateform/components";
@@ -25,6 +25,7 @@ export default function () {
   const pathname = usePathname();
   const { me } = useMeStore();
   const { detail, pushDetail, closeDetail } = useDetailStore();
+  const { unreadCounts, clearUnread } = useDmUnreadStore();
 
   const { register, handleSubmit, reset } = useForm<DmStoreRequest>();
 
@@ -70,6 +71,7 @@ export default function () {
 
   useEffect(() => {
     if (!userId) return;
+    clearUnread(userId);
     const { fetcher } = dmRead(userId);
     fetcher();
   }, [userId]);
@@ -125,9 +127,9 @@ export default function () {
                     fill
                   />
                 </div>
-                {message.unreadCount > 0 && (
+                {(unreadCounts[message.user.id] ?? 0) > 0 && (
                   <div className="absolute text-[12px] top-0 right-0 bg-like rounded-full w-[20px] h-[20px] flex items-center justify-center">
-                    {message.unreadCount}
+                    {unreadCounts[message.user.id]}
                   </div>
                 )}
               </div>

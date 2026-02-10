@@ -12,10 +12,12 @@ class Post extends Model
     'user_id',
     'content',
     'is_public',
+    'is_posted',
   ];
 
   protected $casts = [
     'is_public' => 'boolean',
+    'is_posted' => 'boolean',
   ];
 
   public function user(): BelongsTo

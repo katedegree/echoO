@@ -9,7 +9,6 @@ export type DmIndexResponse = {
     name: string;
     iconUrl: string | null;
   };
-  unreadCount: number;
 }[];
 
 export function dmIndex() {

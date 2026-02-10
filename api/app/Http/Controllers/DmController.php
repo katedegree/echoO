@@ -30,18 +30,9 @@ class DmController extends Controller
             ->get()
             ->keyBy('id');
 
-        $readMessageIds = DB::table('message_reads')
-            ->where('user_id', $me->id)
-            ->pluck('message_id');
-
-        $data = $grouped->map(function ($msgs, $partnerId) use ($me, $partners, $readMessageIds) {
+        $data = $grouped->map(function ($msgs, $partnerId) use ($partners) {
             $latest = $msgs->first();
             $partner = $partners->get($partnerId);
-
-            $unreadCount = $msgs
-                ->where('sender_user_id', $partnerId)
-                ->whereNotIn('id', $readMessageIds)
-                ->count();
 
             return [
                 'id' => $latest->id,
@@ -51,11 +42,27 @@ class DmController extends Controller
                     'name' => $partner?->profile?->name,
                     'iconUrl' => $partner?->profile?->iconMedia?->url,
                 ],
-                'unreadCount' => $unreadCount,
             ];
         })->sortByDesc('id')->values();
 
         return QueryResponse::success($data)->json();
+    }
+
+    public function unread(Request $request)
+    {
+        $me = $request->user();
+
+        $readMessageIds = DB::table('message_reads')
+            ->where('user_id', $me->id)
+            ->pluck('message_id');
+
+        $unreadCounts = Message::where('receiver_user_id', $me->id)
+            ->whereNotIn('id', $readMessageIds)
+            ->selectRaw('sender_user_id, COUNT(*) as count')
+            ->groupBy('sender_user_id')
+            ->pluck('count', 'sender_user_id');
+
+        return QueryResponse::success($unreadCounts)->json();
     }
 
     public function show(Request $request, $userId)

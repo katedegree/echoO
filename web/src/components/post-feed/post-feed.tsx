@@ -14,6 +14,7 @@ interface Post {
   }[];
   likesCount: number;
   isPublic: boolean;
+  isMe: boolean;
 }
 
 interface Props {

@@ -63,8 +63,9 @@ class PostController extends Controller
 
     $userIds = $users->pluck('id');
 
-    // 各ユーザーの最新投稿IDを1クエリで取得
+    // 各ユーザーの最新投稿IDを1クエリで取得（is_postedがtrueのもののみ）
     $latestPostIds = Post::whereIn('user_id', $userIds)
+      ->where('is_posted', true)
       ->selectRaw('MAX(id) as id')
       ->groupBy('user_id')
       ->pluck('id');
@@ -115,11 +116,14 @@ class PostController extends Controller
       $post = $user->posts()->create([
         'content' => $request->input('content'),
         'is_public' => $isPublic,
+        'is_posted' => $isPublic,
       ]);
 
       $post->media()->attach($request->input('mediaIds'));
 
-      $user->update(['posted_at' => now()]);
+      if ($isPublic) {
+        $user->update(['posted_at' => now()]);
+      }
     });
 
     return MutationResponse::success('投稿しました。')->json(201);

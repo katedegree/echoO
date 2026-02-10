@@ -3,13 +3,14 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class WNService
 {
-  protected int $lat;
-  protected int $lng;
+  protected float $lat;
+  protected float $lng;
 
-  public function __construct(int $lat, int $lng)
+  public function __construct(float $lat, float $lng)
   {
     $this->lat = $lat;
     $this->lng = $lng;
@@ -17,7 +18,7 @@ class WNService
 
   public function isRain(): bool
   {
-    /** @var Response $response */
+     /** @var Response $response */
     $response = Http::withHeaders([
       'X-Api-Key' => config('wn.key'),
     ])->get('https://wxtech.weathernews.com/api/v1/ss1wx', [
@@ -30,6 +31,8 @@ class WNService
     }
 
     $data = $response->json();
-    return ($data['wxdata']['srf'][0]['wx'] ?? null) === 'rain';
+    Log::info('WNService response', $data['wxdata']);
+
+    return ($data['wxdata'][0]['srf'][0]['wx'] ?? null) === 300;
   }
 }

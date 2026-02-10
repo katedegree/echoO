@@ -103,7 +103,7 @@ export default function () {
 
           {/* 前面: 投稿リスト */}
           <div className="relative z-10 px-xl py-[30vw]">
-            <PostFeed posts={allPosts} containerRef={scrollRef} />
+            <PostFeed posts={allPosts.map(post => ({...post, isMe: !!isMe}))} containerRef={scrollRef} />
           </div>
         </div>
       </Drawer>

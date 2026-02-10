@@ -19,6 +19,7 @@ interface Props {
   }[];
   likesCount: number;
   isPublic?: boolean;
+  isMe?: boolean;
 }
 
 export function PostCard({
@@ -27,6 +28,7 @@ export function PostCard({
   media,
   likesCount,
   isPublic = true,
+  isMe = false,
 }: Props) {
   const router = useRouter();
   const { me, setMe } = useMeStore();
@@ -66,7 +68,7 @@ export function PostCard({
 
   return (
     <div className="bg-glass rounded-base p-lg relative" key={id}>
-      {!isPublic && (
+      {!isPublic && isMe && (
         <>
           <div className="absolute top-md right-md">
             <Icon name="password" size={28} />
