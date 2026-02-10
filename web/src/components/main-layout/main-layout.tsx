@@ -84,7 +84,7 @@ export function MainLayout({ children }: Props) {
         }}
       >
         <Header />
-        <ToastProvider<ToastType> component={Toast} placement="top-center" />
+        <ToastProvider<ToastType> component={Toast} placement="top-center" zIndex={100} />
         <main>{children}</main>
 
         <AnimatePresence mode="wait">

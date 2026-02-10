@@ -8,6 +8,7 @@ import { Modal, TextareaInput, TextInput } from "@kateform/components";
 import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useError } from "@kateform/hooks";
 
 interface Props {
   isOpen: boolean;
@@ -21,6 +22,7 @@ interface Props {
 
 export function ProfileModal({ isOpen, onClose, user }: Props) {
   const { me, setMe } = useMeStore();
+  const { setErrors } = useError();
   const [previewUrl, setPreviewUrl] = useState(user.iconUrl);
   const {
     register,
@@ -94,11 +96,14 @@ export function ProfileModal({ isOpen, onClose, user }: Props) {
             ...(patch.bio !== undefined && { bio: patch.bio as string }),
             ...(previewUrl !== user.iconUrl && { iconUrl: previewUrl }),
           });
-          addToast("success", res.message);
           onClose();
+          addToast("success", res.message);
           break;
         case MUTATION_STATUS.ERROR:
           addToast("error", res.message);
+          break;
+        case MUTATION_STATUS.VALIDATION:
+          setErrors(res.fieldErrors);
           break;
       }
     });
@@ -143,7 +148,7 @@ export function ProfileModal({ isOpen, onClose, user }: Props) {
           )}
         </label>
 
-        <div className="w-full">
+        <div className="w-full flex flex-col gap-xl pb-xl">
           <TextInput id="name" label="名前" {...register("name")} />
           <TextareaInput id="bio" label="自己紹介" {...register("bio")} />
         </div>

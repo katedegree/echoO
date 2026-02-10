@@ -69,12 +69,14 @@ export default function () {
           ref={scrollRef}
           className="relative w-screen bg-base h-screen max-h-screen overflow-y-auto bg-gradient"
         >
-          <div
-            className="absolute top-xl right-xl z-50 cursor-pointer"
-            onClick={() => setOpenModal(true)}
-          >
-            <Icon name="setting" size={36} />
-          </div>
+          {isMe && (
+            <div
+              className="absolute top-xl right-xl z-50 cursor-pointer"
+              onClick={() => setOpenModal(true)}
+            >
+              <Icon name="setting" size={36} />
+            </div>
+          )}
           <div className="absolute inset-x-0 top-0 z-0">
             <div className="relative w-screen h-[100vw]">
               <Image
