@@ -11,7 +11,7 @@ export function MediaModal() {
 
   return (
     <Modal zIndex={60} isOpen={urls.length > 0} onClose={close}>
-      <div className="relative bg-main p-lg rounded-base m-[calc(var(--spacing-xl)+var(--spacing-md))]">
+      <div className="relative bg-main p-lg rounded-base w-[320px]">
         <Image src={urls[index] || ""} alt="media" width={600} height={600} />
 
         {!isFirst && (

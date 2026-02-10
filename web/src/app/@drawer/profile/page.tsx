@@ -3,7 +3,7 @@
 import { Icon } from "@/components/icon/icon";
 import { PostFeed } from "@/components/post-feed/post-feed";
 import { postIndex, userShow } from "@/lib/api";
-import { useMeStore } from "@/stores";
+import { useMeStore, useWnStore } from "@/stores";
 import { Drawer } from "@kateform/components";
 import Image from "next/image";
 import { useRef, useState } from "react";
@@ -19,6 +19,7 @@ const DEFAULT_LIMIT = 20;
 export default function () {
   const pathname = usePathname();
   const { me } = useMeStore();
+  const { lat, lng } = useWnStore();
   const { detail, closeDetail } = useDetailStore();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [openModal, setOpenModal] = useState(false);
@@ -37,11 +38,13 @@ export default function () {
     // size,
     // setSize,
     // isLoading,
-  } = useSWRInfinite(infiniteKey(userId), async ([_, _userId, cursor]) => {
+  } = useSWRInfinite(infiniteKey(userId, lat), async ([_, _userId, _lat, cursor]) => {
     return await postIndexFetcher({
       limit: DEFAULT_LIMIT,
       cursor,
       userId,
+      lat,
+      lng,
     });
   });
 

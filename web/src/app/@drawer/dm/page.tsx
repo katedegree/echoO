@@ -12,9 +12,8 @@ import { addToast } from "@/utils";
 import { Drawer, MultiMediaInput, TextareaInput } from "@kateform/components";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useSWR from "swr";
-import useSWRInfinite from "swr/infinite";
 import { useScrollLock } from "../use-scroll-lock";
 import { useForm } from "react-hook-form";
 import { dmRead } from "@/lib/api/dm-read";
@@ -26,30 +25,50 @@ export default function () {
   const { me } = useMeStore();
   const { detail, pushDetail, closeDetail } = useDetailStore();
   const { unreadCounts, clearUnread } = useDmUnreadStore();
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { register, handleSubmit, reset } = useForm<DmStoreRequest>();
+  const { register, handleSubmit, reset, watch } = useForm<DmStoreRequest>();
+  const content = watch("content");
 
   const onSubmit = (values: DmStoreRequest) => {
-    if (!userId) return;
+    if (!userId || !dmShowData) return;
+
+    const optimisticMessage = {
+      id: Date.now(),
+      content: values.content,
+      media: mediaUrls,
+      isMe: true,
+    };
+
+    mutateDmShow(
+      (prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          data: [optimisticMessage, ...prev.data],
+        };
+      },
+      { revalidate: false },
+    );
+
+    reset({ content: "" });
+    const sentMediaIds = mediaIds;
+    setMediaIds([]);
+    setMediaUrls([]);
+
+    scrollToBottom("smooth");
+
     const { fetcher } = dmStore();
-    fetcher({ ...values, receiverUserId: userId, mediaIds }).then((res) => {
-      switch (res.status) {
-        case MUTATION_STATUS.SUCCESS:
-          addToast(res.status, res.message);
-          reset();
-          setMediaIds([]);
-          setMediaUrls([]);
-          break;
-        case MUTATION_STATUS.ERROR:
-          addToast(res.status, res.message);
-          break;
-        case MUTATION_STATUS.VALIDATION:
-          Object.values(res.fieldErrors).forEach((message) => {
-            addToast(MUTATION_STATUS.ERROR, message);
-          });
-          break;
-      }
-    });
+    fetcher({ ...values, receiverUserId: userId, mediaIds: sentMediaIds }).then(
+      (res) => {
+        if (res.status !== MUTATION_STATUS.SUCCESS) {
+          if (res.status === MUTATION_STATUS.ERROR) {
+            addToast(MUTATION_STATUS.ERROR, res.message);
+          }
+          mutateDmShow();
+        }
+      },
+    );
   };
   const { key, fetcher } = dmIndex();
   const { data } = useSWR<QueryResponse<DmIndexResponse>>(key, fetcher);
@@ -58,16 +77,27 @@ export default function () {
   const userId = detail?.path === "/dm" ? detail.id : null;
   const user = messages.find((m) => m.user.id === userId)?.user ?? null;
 
-  const { infiniteKey, fetcher: dmShowFetcher } = dmShow(userId!);
-  const { data: dmShowData } = useSWRInfinite(
-    userId ? infiniteKey : () => null,
-    async ([_, _userId, cursor]) => {
-      return await dmShowFetcher({ limit: 20, cursor });
-    },
+  const { key: dmShowKey, fetcher: dmShowFetcher } = dmShow(userId!);
+  const { data: dmShowData, mutate: mutateDmShow } = useSWR(
+    userId ? dmShowKey : null,
+    () => dmShowFetcher({ limit: 10000, cursor: null }),
   );
-  const dmMessages = dmShowData
-    ? dmShowData.flatMap((page) => page.data).reverse()
-    : [];
+  const dmMessages = dmShowData ? [...dmShowData.data].reverse() : [];
+
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = "instant") => {
+    setTimeout(() => {
+      scrollRef.current?.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior,
+      });
+    }, 0);
+  }, []);
+
+  // 初回表示時に最下部にスクロール
+  useEffect(() => {
+    if (!dmShowData || !userId) return;
+    scrollToBottom();
+  }, [dmShowData, userId]);
 
   useEffect(() => {
     if (!userId) return;
@@ -135,7 +165,9 @@ export default function () {
               </div>
               <div>
                 <p className="text-sm ine-clamp-1 pb-sm">{message.user.name}</p>
-                <p className="text-sm line-clamp-2 break-all">{message.content}</p>
+                <p className="text-sm line-clamp-2 break-all">
+                  {message.content}
+                </p>
               </div>
             </div>
           ))}
@@ -177,7 +209,10 @@ export default function () {
           </div>
         </div>
 
-        <div className="bg-base w-screen h-screen bg-gradient py-[100px] px-lg flex flex-col gap-md overflow-y-auto">
+        <div
+          ref={scrollRef}
+          className="bg-base w-screen h-screen bg-gradient pt-[100px] pb-[240px] px-lg flex flex-col gap-md overflow-y-auto"
+        >
           {dmMessages.map((message) => (
             <DmMessage
               key={message.id}
@@ -186,8 +221,8 @@ export default function () {
               isMe={message.isMe}
               avatarUrl={
                 message.isMe
-                  ? me?.iconUrl ?? "/default-avatar.png"
-                  : user?.iconUrl ?? "/default-avatar.png"
+                  ? (me?.iconUrl ?? "/default-avatar.png")
+                  : (user?.iconUrl ?? "/default-avatar.png")
               }
               onAvatarClick={() => {
                 if (message.isMe) {
@@ -229,9 +264,10 @@ export default function () {
             </div>
           </div>
           <button
-            className="bg-linear-to-br from-main to-accent w-[48px] h-[48px] flex items-center justify-center rounded-full shrink-0"
+            className="bg-accent w-[48px] h-[48px] flex items-center justify-center rounded-full shrink-0"
             type="button"
             onClick={handleSubmit(onSubmit)}
+            disabled={!content?.trim() && mediaIds.length === 0}
           >
             <Icon name="send" />
           </button>

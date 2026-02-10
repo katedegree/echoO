@@ -5,6 +5,8 @@ export interface PostIndexRequest {
   limit: number;
   cursor: string | null;
   userId: number | null;
+  lat: number | null;
+  lng: number | null;
 }
 
 export interface PostIndexResponse {
@@ -28,14 +30,14 @@ export function postIndex() {
   return {
     key: ["posts"] as const,
     infiniteKey:
-      (userId: number | null) =>
+      (userId: number | null, lat: number | null = null) =>
       (
         _pageIndex: number,
         previousPageData: PostIndexPageData | null,
       ) => {
         if (previousPageData && !previousPageData.data.length) return null;
         const cursor = previousPageData?.cursor ?? null;
-        return ["posts", userId, cursor] as const;
+        return ["posts", userId, lat, cursor] as const;
       },
     fetcher: (req: PostIndexRequest): Promise<PostIndexPageData> =>
       fetchApi("GET", "/posts", req),

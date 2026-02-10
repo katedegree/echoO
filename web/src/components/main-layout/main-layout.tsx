@@ -87,11 +87,11 @@ export function MainLayout({ children }: Props) {
   useEffect(() => {
     if (!me) return;
     navigator.geolocation.getCurrentPosition((position) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      wn.setLocation(lat, lng);
       const { fetcher } = wnIsRain();
-      fetcher({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      }).then((res) => {
+      fetcher({ lat, lng }).then((res) => {
         wn.setIsRain(res.data.isRain);
 
         if (res.data.isRain) {

@@ -13,7 +13,7 @@ export function Modal({ isOpen, onClose, children, zIndex = 50 }: ModalProps) {
       style={{ zIndex }}
     >
       <div className="absolute inset-0 bg-label opacity-20" onClick={onClose} />
-      <div className="absolute">{children}</div>
+      <div className="absolute w-fit">{children}</div>
     </div>
   );
 }

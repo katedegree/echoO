@@ -10,11 +10,13 @@ export default function () {
   const { infiniteKey, fetcher } = postIndex();
   const { data } = useSWRInfinite(
     infiniteKey(null),
-    async ([_, _userId, cursor]) => {
+    async ([_, _userId, _lat, cursor]) => {
       return await fetcher({
         limit: DEFAULT_LIMIT,
         cursor,
         userId: null,
+        lat: null,
+        lng: null,
       });
     },
   );

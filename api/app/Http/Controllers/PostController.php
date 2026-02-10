@@ -17,6 +17,7 @@ class PostController extends Controller
   // $userIdを指定しない場合 -> 全てのユーザーの最新の投稿1件を返す
   // $me->idと$userIdが同じ場合 -> 全ての投稿を返す
   // $me->idと$userIdが異なる場合 -> $userIdの最新の投稿1件を返す
+  // 雨の日 + 自分以外のuserIdの場合 -> そのユーザーのis_public=falseの投稿を全件返す
 
   // 最新の投稿1件を返す場合 -> 投稿ユーザーの累計いいねをlikesCountとする
   // 全ての投稿を返す場合 -> 投稿それぞれのいいねをlikesCountとする
@@ -24,13 +25,39 @@ class PostController extends Controller
   {
     $limit = $request->input('limit');
     $userId = $request->input('userId');
+    $lat = $request->input('lat');
+    $lng = $request->input('lng');
 
     $me = $request->user();
     $isMe = $me && $userId && $me->id == $userId;
+    $isRain = $lat && $lng && (new WNService($lat, $lng))->isRain();
 
     if ($isMe) {
       // 自分の全投稿 -> 投稿ごとのいいね数
       $posts = Post::where('user_id', $me->id)
+        ->withCount('likedUsers')
+        ->with('media')
+        ->latest()
+        ->get()
+        ->map(fn($post) => [
+          'id' => $post->id,
+          'content' => $post->content,
+          'media' => $post->media->map(fn($media) => [
+            'id' => $media->id,
+            'label' => $media->label,
+            'url' => $media->url,
+          ]),
+          'likesCount' => $post->liked_users_count,
+          'isPublic' => $post->is_public,
+        ]);
+
+      return QueryResponse::success($posts)->json();
+    }
+
+    if ($isRain && $userId) {
+      // 雨の日 + 他人のプロフィール -> is_public=falseの全投稿 + 投稿ごとのいいね数
+      $posts = Post::where('user_id', $userId)
+        ->where('is_public', true)
         ->withCount('likedUsers')
         ->with('media')
         ->latest()

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class WNService
@@ -18,7 +19,7 @@ class WNService
 
   public function isRain(): bool
   {
-     /** @var Response $response */
+    /** @var Response $response */
     $response = Http::withHeaders([
       'X-Api-Key' => config('wn.key'),
     ])->get('https://wxtech.weathernews.com/api/v1/ss1wx', [
@@ -31,8 +32,26 @@ class WNService
     }
 
     $data = $response->json();
-    Log::info('WNService response', $data['wxdata']);
+    $srf = collect($data['wxdata'][0]['srf'] ?? []);
 
-    return ($data['wxdata'][0]['srf'][0]['wx'] ?? null) === 300;
+    if ($srf->isEmpty()) {
+      return false;
+    }
+
+    $baseDate = Carbon::parse($srf->first()['date']);
+    $threshold = $baseDate->copy()->addMinutes(30);
+
+    $isRain = $srf
+      ->filter(fn($entry) => Carbon::parse($entry['date'])->lte($threshold))
+      ->contains(fn($entry) => ($entry['wx'] ?? null) === 300);
+
+    Log::info('WNService', [
+      'lat' => $this->lat,
+      'lng' => $this->lng,
+      'baseDate' => $baseDate->toIso8601String(),
+      'isRain' => $isRain,
+    ]);
+
+    return $isRain;
   }
 }

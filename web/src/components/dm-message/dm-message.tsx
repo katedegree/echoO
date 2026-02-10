@@ -36,7 +36,7 @@ export function DmMessage({
       )}
     >
       {media.length > 0 && (
-        <div className="grid grid-cols-2 rounded-base overflow-hidden gap-sm mt-sm pb-md w-full">
+        <div className="grid grid-cols-2 rounded-base overflow-hidden gap-sm mt-sm pb-md w-[240px]">
           {media.map((url, i) => {
             const isVideo = /\.(mp4|mov|webm|ogg)$/i.test(url);
 

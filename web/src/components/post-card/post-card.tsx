@@ -73,7 +73,7 @@ export function PostCard({
           <div className="absolute top-md right-md">
             <Icon name="password" size={28} />
           </div>
-          <div className="h-[52px]" />
+          <div className="h-lg" />
         </>
       )}
       <div className="grid grid-cols-2 rounded-base overflow-hidden gap-sm">
