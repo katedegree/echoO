@@ -20,6 +20,8 @@ Route::middleware('auth:sanctum')->group(function () {
   });
   Route::prefix('auth')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::delete('/', [AuthController::class, 'destroy']);
   });
   Route::prefix('users')->group(function () {
     Route::get('/{id}', [UserController::class, 'show']);

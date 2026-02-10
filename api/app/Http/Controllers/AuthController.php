@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthRegisterRequest;
+use App\Models\Message;
 use App\Models\User;
 use App\Responses\MutationResponse;
 use App\Responses\QueryResponse;
@@ -67,5 +68,28 @@ class AuthController extends Controller
     ];
 
     return QueryResponse::success($me)->json();
+  }
+
+  public function logout()
+  {
+    request()->user()->currentAccessToken()->delete();
+
+    return MutationResponse::success('ログアウトしました。')->json(200);
+  }
+
+  public function destroy()
+  {
+    $user = request()->user();
+    $user->currentAccessToken()->delete();
+
+    DB::transaction(function () use ($user) {
+      Message::where('sender_user_id', $user->id)
+        ->orWhere('receiver_user_id', $user->id)
+        ->delete();
+
+      $user->delete();
+    });
+
+    return MutationResponse::success('アカウントを削除しました。')->json(200);
   }
 }
