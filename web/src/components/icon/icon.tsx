@@ -4,10 +4,10 @@ import {
   ChevronsLeft,
   ChevronsRight,
   CircleUserRound,
+  CloudRainWind,
   DoorOpenIcon,
   Heart,
   House,
-  ImagePlus,
   LockKeyhole,
   Mail,
   MessageCircle,
@@ -34,6 +34,7 @@ const icons = {
   spinner: Spinner,
   reverse: ArrowLeftRight,
   send: Send,
+  rain: CloudRainWind,s
 } as const;
 
 interface Props {
