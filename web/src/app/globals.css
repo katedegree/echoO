@@ -63,6 +63,8 @@ html {
 
   --font-weight-normal: 400;
   --font-weight-bold: 700;
+
+  --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @utility text-base-hover {

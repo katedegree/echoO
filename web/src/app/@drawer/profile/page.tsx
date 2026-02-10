@@ -38,15 +38,18 @@ export default function () {
     // size,
     // setSize,
     // isLoading,
-  } = useSWRInfinite(infiniteKey(userId, lat), async ([_, _userId, _lat, cursor]) => {
-    return await postIndexFetcher({
-      limit: DEFAULT_LIMIT,
-      cursor,
-      userId,
-      lat,
-      lng,
-    });
-  });
+  } = useSWRInfinite(
+    infiniteKey(userId, lat),
+    async ([_, _userId, _lat, cursor]) => {
+      return await postIndexFetcher({
+        limit: DEFAULT_LIMIT,
+        cursor,
+        userId,
+        lat,
+        lng,
+      });
+    },
+  );
 
   const user = userShowData?.data;
   const isMe = me && userId === me.id;
@@ -106,14 +109,17 @@ export default function () {
 
           {/* 前面: 投稿リスト */}
           <div className="relative z-10 px-xl py-[30vw]">
-            <PostFeed posts={allPosts.map(post => ({...post, isMe: !!isMe}))} containerRef={scrollRef} />
+            <PostFeed
+              posts={allPosts.map((post) => ({ ...post, isMe: !!isMe }))}
+              containerRef={scrollRef}
+            />
           </div>
         </div>
       </Drawer>
       <ProfileModal
         isOpen={openModal}
         onClose={() => setOpenModal(false)}
-        user={{ ...user, name: name!, iconUrl: iconUrl ?? null, bio: bio! }}
+        user={me!}
       />
     </>
   );
