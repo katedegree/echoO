@@ -35,9 +35,7 @@ export default function () {
   const { infiniteKey, fetcher: postIndexFetcher } = postIndex();
   const {
     data: postIndexData,
-    // size,
-    // setSize,
-    // isLoading,
+    isLoading: postIndexLoading,
   } = useSWRInfinite(
     infiniteKey(userId, lat),
     async ([_, _userId, _lat, cursor]) => {
@@ -111,6 +109,7 @@ export default function () {
           <div className="relative z-10 px-xl py-[30vw]">
             <PostFeed
               posts={allPosts.map((post) => ({ ...post, isMe: !!isMe }))}
+              isLoading={postIndexLoading}
               containerRef={scrollRef}
             />
           </div>

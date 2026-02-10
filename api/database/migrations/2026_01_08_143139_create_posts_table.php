@@ -18,6 +18,7 @@ return new class extends Migration
       $table->boolean('is_public');
       $table->boolean('is_posted')->default(true);
       $table->timestamps();
+      $table->softDeletes();
 
       $table->foreign('user_id')
         ->references('id')

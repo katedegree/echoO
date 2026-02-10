@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { dmRead } from "@/lib/api/dm-read";
 import { dmStore, DmStoreRequest } from "@/lib/api/dm-store";
 import { DmMessage } from "@/components/dm-message/dm-message";
+import { Skeleton } from "@/components/skeleton/skeleton";
 
 export default function () {
   const pathname = usePathname();
@@ -71,7 +72,9 @@ export default function () {
     );
   };
   const { key, fetcher } = dmIndex();
-  const { data } = useSWR<QueryResponse<DmIndexResponse>>(key, fetcher);
+  const { data, isLoading: dmIndexLoading } = useSWR<
+    QueryResponse<DmIndexResponse>
+  >(key, fetcher);
   const messages = data?.data ?? [];
 
   const userId = detail?.path === "/dm" ? detail.id : null;
@@ -136,41 +139,53 @@ export default function () {
     <>
       <Drawer isOpen={isOpen} placement="right" zIndex={20}>
         <div className="bg-base bg-gradient w-screen h-screen py-[100px] px-lg flex flex-col gap-lg overflow-y-auto">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className="flex gap-lg"
-              onClick={() => pushDetail("/dm", message.user.id)}
-            >
-              <div className="relative">
-                <div
-                  className="relative w-[64px] h-[64px] rounded-full overflow-hidden shrink-0"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    pushDetail("/profile", message.user.id);
-                  }}
-                >
-                  <Image
-                    className="object-cover"
-                    src={message.user.iconUrl ?? "/default-avatar.png"}
-                    alt="avatar"
-                    fill
-                  />
-                </div>
-                {(unreadCounts[message.user.id] ?? 0) > 0 && (
-                  <div className="absolute text-[12px] top-0 right-0 bg-like rounded-full w-[20px] h-[20px] flex items-center justify-center">
-                    {unreadCounts[message.user.id]}
+          {dmIndexLoading
+            ? Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex gap-lg">
+                  <Skeleton className="w-[64px] h-[64px] rounded-full shrink-0" />
+                  <div className="flex-1 flex flex-col gap-sm justify-center">
+                    <Skeleton className="h-[1em] w-1/3 rounded-base" />
+                    <Skeleton className="h-[1em] w-2/3 rounded-base" />
                   </div>
-                )}
-              </div>
-              <div>
-                <p className="text-sm ine-clamp-1 pb-sm">{message.user.name}</p>
-                <p className="text-sm line-clamp-2 break-all">
-                  {message.content}
-                </p>
-              </div>
-            </div>
-          ))}
+                </div>
+              ))
+            : messages.map((message) => (
+                <div
+                  key={message.id}
+                  className="flex gap-lg"
+                  onClick={() => pushDetail("/dm", message.user.id)}
+                >
+                  <div className="relative">
+                    <div
+                      className="relative w-[64px] h-[64px] rounded-full overflow-hidden shrink-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        pushDetail("/profile", message.user.id);
+                      }}
+                    >
+                      <Image
+                        className="object-cover"
+                        src={message.user.iconUrl ?? "/default-avatar.png"}
+                        alt="avatar"
+                        fill
+                      />
+                    </div>
+                    {(unreadCounts[message.user.id] ?? 0) > 0 && (
+                      <div className="absolute text-[12px] top-0 right-0 bg-like rounded-full w-[20px] h-[20px] flex items-center justify-center">
+                        {unreadCounts[message.user.id]}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-sm ine-clamp-1 pb-sm">
+                      {message.user.name}
+                    </p>
+                    <p className="text-sm line-clamp-2 break-all">
+                      {message.content}
+                    </p>
+                  </div>
+                </div>
+              ))}
         </div>
       </Drawer>
 

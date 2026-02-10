@@ -8,7 +8,7 @@ const DEFAULT_LIMIT = 20;
 
 export default function () {
   const { infiniteKey, fetcher } = postIndex();
-  const { data } = useSWRInfinite(
+  const { data, isLoading } = useSWRInfinite(
     infiniteKey(null),
     async ([_, _userId, _lat, cursor]) => {
       return await fetcher({
@@ -22,10 +22,9 @@ export default function () {
   );
 
   const posts = data ? data.flatMap((page) => page.data) : [];
-
   return (
     <div className="px-xl">
-      <PostFeed posts={posts} />
+      <PostFeed posts={posts} isLoading={isLoading} />
     </div>
   );
 }
