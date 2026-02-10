@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\DmController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Services\WNService;
@@ -32,6 +33,11 @@ Route::middleware('auth:sanctum')->group(function () {
   });
   Route::prefix('media')->group(function () {
     Route::post('/', [MediaController::class, 'store']);
+  });
+  Route::prefix('dm')->group(function () {
+    Route::get('/', [DmController::class, 'index']);
+    Route::get('/{userId}', [DmController::class, 'show']);
+    Route::post('/', [DmController::class, 'store']);
   });
 });
 

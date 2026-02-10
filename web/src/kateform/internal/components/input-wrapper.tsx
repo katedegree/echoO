@@ -67,10 +67,18 @@ export function InputWrapper<T>({
         {isDisabled && (
           <div className="absolute inset-0 hover:cursor-not-allowed" />
         )}
+
+        {error && (
+          <p
+            className={cn(
+              "absolute top-full left-0 w-full h-lh pt-1 text-sm text-error whitespace-nowrap",
+              !error && "opacity-0",
+            )}
+          >
+            {error}
+          </p>
+        )}
       </motion.div>
-      <p className={cn("h-lh pt-1 text-sm text-error w-0 whitespace-nowrap", !error && "opacity-0")}>
-        {error}
-      </p>
     </div>
   );
 }

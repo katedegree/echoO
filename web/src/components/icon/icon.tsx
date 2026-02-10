@@ -1,15 +1,18 @@
 import { s } from "framer-motion/client";
 import {
+  ArrowLeftRight,
   ChevronsLeft,
   ChevronsRight,
   CircleUserRound,
   DoorOpenIcon,
   Heart,
   House,
+  ImagePlus,
   LockKeyhole,
   Mail,
   MessageCircle,
   RefreshCw,
+  Send,
   Settings,
   SquarePlus,
 } from "lucide-react";
@@ -29,6 +32,8 @@ const icons = {
   heart: Heart,
   setting: Settings,
   spinner: Spinner,
+  reverse: ArrowLeftRight,
+  send: Send,
 } as const;
 
 interface Props {

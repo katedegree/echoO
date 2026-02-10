@@ -1,18 +1,16 @@
 import { forwardRef } from "react";
 import { cn } from "@kateform/utils";
 
-export interface TextareaProps extends Omit<
-  React.ComponentProps<"textarea">,
-  "id"
-> {
+export interface TextareaProps
+  extends Omit<React.ComponentProps<"textarea">, "id"> {
   id: string;
-  height?: number;
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ height = 160, ...props }, ref) => {
+  (props, ref) => {
     return (
       <textarea
+        rows={5}
         {...props}
         autoComplete="off"
         className={cn(
@@ -21,7 +19,6 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           "no-scrollbar resize-none",
           props.className,
         )}
-        style={{ height }}
         ref={ref}
       />
     );

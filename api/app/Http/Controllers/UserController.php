@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Responses\MutationResponse;
 use App\Responses\QueryResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -15,10 +16,17 @@ class UserController extends Controller
     $user = request()->user();
     // NOTE: パラメーターの$idは文字列型なので == で比較する
     $isMe = $id == $user->id;
-    $isLiked = $user->likedUsers()->wherePivot('liked_user_id', $id)->exists();
+    $isLiked = DB::table('user_likes')
+      ->where(function ($q) use ($user, $id) {
+        $q->where('liker_user_id', $user->id)->where('liked_user_id', $id);
+      })
+      ->orWhere(function ($q) use ($user, $id) {
+        $q->where('liker_user_id', $id)->where('liked_user_id', $user->id);
+      })
+      ->exists();
 
     // NOTE: 基本的にここは不正リクエスト
-    if (!($isMe || $isLiked)) {
+    if (!$isMe && !$isLiked) {
       abort(403);
     }
 

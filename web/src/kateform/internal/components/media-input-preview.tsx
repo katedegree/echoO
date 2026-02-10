@@ -29,7 +29,7 @@ export function MediaInputPreview({
       ) : (
         <img className={mediaClassName} src={url} />
       )}
-      <button className="absolute right-sm top-sm" onClick={onRemove}>
+      <button className="absolute right-[4%] top-[4%]" onClick={onRemove}>
         <MediaRemoveIcon />
       </button>
       {isUploading && (

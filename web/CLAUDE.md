@@ -1,7 +1,6 @@
-# APIエンドポイント作成時の手順
+# フロントファイルからAPIエンドポイント作成時の手順
 
 ## 1. 前提
-- 質問は日本語でして
 - バックエンドAPIはLaravelで実装されている
 - web/src/lib/api/*の中身が`api定義ファイル`になる
 - `Query` -> GET, `Mutaion` -> POST, PATCH, DELETE

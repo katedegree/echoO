@@ -6,7 +6,6 @@ import { postStore, PostStoreRequest } from "@/lib/api/post-store";
 import { useSidebarStore } from "@/stores";
 import { addToast } from "@/utils";
 import { Drawer, MultiMediaInput, TextareaInput } from "@kateform/components";
-import { useError } from "@kateform/hooks";
 import { cn } from "@kateform/utils";
 import { useScrollLock } from "@/app/@drawer/use-scroll-lock";
 import { useEffect, useState } from "react";
@@ -29,7 +28,6 @@ export function PostDrawer({ isOpen, onClose }: Porps) {
         lng: 0,
       },
     });
-  const { setErrors } = useError();
   const { sidebarPos } = useSidebarStore();
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
 
@@ -66,7 +64,9 @@ export function PostDrawer({ isOpen, onClose }: Porps) {
           addToast(res.status, res.message);
           break;
         case MUTATION_STATUS.VALIDATION:
-          setErrors(res.fieldErrors);
+          Object.values(res.fieldErrors).forEach((message) => {
+            addToast(MUTATION_STATUS.ERROR, message);
+          });
           break;
       }
     });
@@ -85,7 +85,9 @@ export function PostDrawer({ isOpen, onClose }: Porps) {
           addToast(res.status, res.message);
           break;
         case MUTATION_STATUS.VALIDATION:
-          setErrors(res.fieldErrors);
+          Object.values(res.fieldErrors).forEach((message) => {
+            addToast(MUTATION_STATUS.ERROR, message);
+          });
           break;
       }
     });

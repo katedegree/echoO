@@ -22,9 +22,9 @@ class UserUpdateRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'name' => ['nullable', 'string'],
+      'name' => ['nullable', 'string', 'max:50'],
       'email' => ['nullable', 'string', 'email'],
-      'bio' => ['nullable', 'string'],
+      'bio' => ['nullable', 'string', 'max:160'],
       'iconId' => ['nullable', 'integer', 'exists:media,id'],
     ];
   }
@@ -33,9 +33,11 @@ class UserUpdateRequest extends FormRequest
   {
     return [
       'name.string' => '名前は文字列で入力してください。',
+      'name.max' => '名前は50文字以内で入力してください。',
       'email.string' => 'メールアドレスは文字列で入力してください。',
       'email.email' => 'メールアドレスの形式が正しくありません。',
       'bio.string' => '自己紹介は文字列で入力してください。',
+      'bio.max' => '自己紹介は160文字以内で入力してください。',
       'iconId.integer' => 'アイコンの形式が正しくありません。',
       'iconId.exists' => '選択されたアイコンが見つかりません。',
     ];

@@ -6,31 +6,25 @@ import { postIndex, userShow } from "@/lib/api";
 import { useMeStore } from "@/stores";
 import { Drawer } from "@kateform/components";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
 import { useScrollLock } from "../use-scroll-lock";
 import { ProfileModal } from "@/components/profile-modal/profile-modal";
+import { useDetailStore } from "@/stores/use-detail-store";
+import { usePathname } from "next/navigation";
 
 const DEFAULT_LIMIT = 20;
 
 export default function () {
-  const { me } = useMeStore();
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
   const pathname = usePathname();
-  const [userId, setId] = useState<number | null>(null);
-
+  const { me } = useMeStore();
+  const { detail, closeDetail } = useDetailStore();
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [openModal, setOpenModal] = useState(false);
-  const isOpen = pathname === "/profile";
+  const isOpen = pathname === "/profile" && detail?.path === "/profile";
+  const userId = isOpen ? detail.id : null;
   useScrollLock(isOpen);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-    if (id) setId(Number(id));
-  }, [pathname]);
 
   const { key: userShowKey, fetcher: userShowFetcher } = userShow(userId!);
   const { data: userShowData } = useSWR(
@@ -55,6 +49,7 @@ export default function () {
   const isMe = me && userId === me.id;
   const name = isMe ? me.name : user?.name;
   const iconUrl = isMe ? me.iconUrl : user?.iconUrl;
+  const bio = isMe ? me.bio : user?.bio;
   const posts = postIndexData ? postIndexData.flatMap((page) => page.data) : [];
 
   if (!user) return null;
@@ -67,8 +62,8 @@ export default function () {
       <Drawer
         isOpen={isOpen}
         placement="right"
-        onClose={() => router.push("/")}
-        zIndex={30}
+        onClose={() => closeDetail()}
+        zIndex={50} // 基本は30
       >
         <div
           ref={scrollRef}
@@ -99,7 +94,7 @@ export default function () {
                 </p>
               </div>
               <p className="h-[160px] whitespace-pre-wrap overflow-hidden line-clamp-5">
-                {user.bio}
+                {bio}
               </p>
             </div>
           </div>
@@ -113,7 +108,7 @@ export default function () {
       <ProfileModal
         isOpen={openModal}
         onClose={() => setOpenModal(false)}
-        user={{ ...user, name: name!, iconUrl: iconUrl ?? null }}
+        user={{ ...user, name: name!, iconUrl: iconUrl ?? null, bio: bio! }}
       />
     </>
   );

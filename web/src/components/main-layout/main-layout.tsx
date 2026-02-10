@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSidebar } from "@/components/main-layout/use-sidebar";
 import { useSidebarStore } from "@/stores/use-sidebar-store";
 import { cn } from "@kateform/utils";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Toast, ToastType } from "../toast/toast";
 import { useMeStore } from "@/stores";
 import { useEffect, useState } from "react";
@@ -15,6 +15,7 @@ import Image from "next/image";
 import useSWR from "swr";
 import { authMe, AuthMeResponse } from "@/lib/api";
 import { isRain } from "@/lib/api/israin";
+import { useDetailStore } from "@/stores/use-detail-store";
 import { PostDrawer } from "../post-drawer/post-drawer";
 import { Header } from "../header/header";
 import { Footer } from "../footer/footer";
@@ -26,10 +27,16 @@ interface Props {
 
 export function MainLayout({ children }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
   const { sidebarRef, isShow, sidebarVariants } = useSidebar();
   const { me, setMe } = useMeStore();
   const { sidebarPos, toggleSidebar } = useSidebarStore();
+  const { pushDetail, initDetail } = useDetailStore();
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    initDetail(router.push, pathname);
+  }, []);
 
   const { key, fetcher } = authMe();
   const { data, isLoading } = useSWR<AuthMeResponse | null>(
@@ -100,7 +107,17 @@ export function MainLayout({ children }: Props) {
                   <button onClick={() => router.push("/")}>
                     <Icon name="home" />
                   </button>
-                  <button>
+                  <button
+                    onClick={() => {
+                      if (!me) {
+                        router.push("/login");
+                        return;
+                      }
+                      if (pathname !== "/dm") {
+                        router.push("/dm");
+                      }
+                    }}
+                  >
                     <Icon name="message" />
                   </button>
                   <button
@@ -117,9 +134,13 @@ export function MainLayout({ children }: Props) {
 
                   <button
                     className="absolute bg-main/70 aspect-square rounded-base top-full mt-sm overflow-hidden"
-                    onClick={() =>
-                      router.push(me ? `/profile?id=${me.id}` : "/login")
-                    }
+                    onClick={() => {
+                      if (!me) {
+                        router.push("/login");
+                        return;
+                      }
+                      pushDetail("/profile", me.id);
+                    }}
                   >
                     {me ? (
                       <div className="w-full h-full">
@@ -150,11 +171,7 @@ export function MainLayout({ children }: Props) {
                 animate="visible"
                 exit="exit"
               >
-                {sidebarPos === "left" ? (
-                  <Icon name="right" />
-                ) : (
-                  <Icon name="left" />
-                )}
+                <Icon name="reverse" />
               </motion.button>
             </div>
           )}
