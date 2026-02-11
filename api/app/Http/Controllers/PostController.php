@@ -97,15 +97,25 @@ class PostController extends Controller
       ->groupBy('user_id')
       ->pluck('id');
 
-    $latestPosts = Post::whereIn('id', $latestPostIds)
-      ->with('media')
-      ->get()
-      ->keyBy('user_id');
+    // is_public=false かつ is_posted=true の投稿は何があっても表示
+    $rainPostedIds = Post::whereIn('user_id', $userIds)
+      ->where('is_public', false)
+      ->where('is_posted', true)
+      ->pluck('id');
 
-    $posts = $users
-      ->map(function ($user) use ($latestPosts) {
-        $post = $latestPosts->get($user->id);
-        if (!$post) return null;
+    $allPostIds = $latestPostIds->merge($rainPostedIds)->unique();
+
+    $allPosts = Post::whereIn('id', $allPostIds)
+      ->with('media')
+      ->latest()
+      ->get();
+
+    $usersById = $users->keyBy('id');
+
+    $posts = $allPosts
+      ->map(function ($post) use ($usersById) {
+        $user = $usersById->get($post->user_id);
+        if (!$user) return null;
 
         return [
           'id' => $post->id,

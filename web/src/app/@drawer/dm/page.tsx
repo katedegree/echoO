@@ -139,53 +139,66 @@ export default function () {
     <>
       <Drawer isOpen={isOpen} placement="right" zIndex={20}>
         <div className="bg-base bg-gradient w-screen h-screen py-[100px] px-lg flex flex-col gap-lg overflow-y-auto">
-          {dmIndexLoading
-            ? Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="flex gap-lg">
-                  <Skeleton className="w-[64px] h-[64px] rounded-full shrink-0" />
-                  <div className="flex-1 flex flex-col gap-sm justify-center">
-                    <Skeleton className="h-[1em] w-1/3 rounded-base" />
-                    <Skeleton className="h-[1em] w-2/3 rounded-base" />
-                  </div>
+          {dmIndexLoading ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex gap-lg">
+                <Skeleton className="w-[64px] h-[64px] rounded-full shrink-0" />
+                <div className="flex-1 flex flex-col gap-sm justify-center">
+                  <Skeleton className="h-[1em] w-1/3 rounded-base" />
+                  <Skeleton className="h-[1em] w-2/3 rounded-base" />
                 </div>
-              ))
-            : messages.map((message) => (
-                <div
-                  key={message.id}
-                  className="flex gap-lg"
-                  onClick={() => pushDetail("/dm", message.user.id)}
-                >
-                  <div className="relative">
-                    <div
-                      className="relative w-[64px] h-[64px] rounded-full overflow-hidden shrink-0"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        pushDetail("/profile", message.user.id);
-                      }}
-                    >
-                      <Image
-                        className="object-cover"
-                        src={message.user.iconUrl ?? "/default-avatar.png"}
-                        alt="avatar"
-                        fill
-                      />
+              </div>
+            ))
+          ) : messages.length === 0 ? (
+            <div className="flex-1 flex flex-col items-center justify-center text-center gap-md opacity-60">
+              <Icon name="heart" size={48} />
+              <p className="text-sm">
+                まだDMはありません
+                <br />
+                いいねをすると
+                <br />
+                相手とDMできるようになります
+              </p>
+            </div>
+          ) : (
+            messages.map((message) => (
+              <div
+                key={message.id}
+                className="flex gap-lg"
+                onClick={() => pushDetail("/dm", message.user.id)}
+              >
+                <div className="relative">
+                  <div
+                    className="relative w-[64px] h-[64px] rounded-full overflow-hidden shrink-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      pushDetail("/profile", message.user.id);
+                    }}
+                  >
+                    <Image
+                      className="object-cover"
+                      src={message.user.iconUrl ?? "/default-avatar.png"}
+                      alt="avatar"
+                      fill
+                    />
+                  </div>
+                  {(unreadCounts[message.user.id] ?? 0) > 0 && (
+                    <div className="absolute text-[12px] top-0 right-0 bg-like rounded-full w-[20px] h-[20px] flex items-center justify-center">
+                      {unreadCounts[message.user.id]}
                     </div>
-                    {(unreadCounts[message.user.id] ?? 0) > 0 && (
-                      <div className="absolute text-[12px] top-0 right-0 bg-like rounded-full w-[20px] h-[20px] flex items-center justify-center">
-                        {unreadCounts[message.user.id]}
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-sm ine-clamp-1 pb-sm">
-                      {message.user.name}
-                    </p>
-                    <p className="text-sm line-clamp-2 break-all">
-                      {message.content}
-                    </p>
-                  </div>
+                  )}
                 </div>
-              ))}
+                <div>
+                  <p className="text-sm ine-clamp-1 pb-sm">
+                    {message.user.name}
+                  </p>
+                  <p className="text-sm line-clamp-2 break-all">
+                    {message.content}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </Drawer>
 

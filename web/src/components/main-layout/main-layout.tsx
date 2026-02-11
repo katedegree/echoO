@@ -150,7 +150,7 @@ export function MainLayout({ children }: Props) {
         <main>{children}</main>
 
         <AnimatePresence>
-          {isStart && (
+          {(isStart || me === undefined) && (
             <motion.div
               className="fixed inset-0 z-60 bg-base bg-gradient flex flex-col gap-md items-center justify-center"
               initial={false}
@@ -183,130 +183,124 @@ export function MainLayout({ children }: Props) {
           )}
         </AnimatePresence>
 
-        {me !== undefined && (
-          <AnimatePresence mode="wait">
-            {isShow && (
-              <div ref={sidebarRef} className="relative">
-                <motion.nav
-                  key={`nav-${sidebarPos}`}
-                  className={cn(
-                    "fixed top-1/2 w-fit h-fit text-base bg-main/70 z-50",
-                    sidebarPos === "left"
-                      ? "left-0 pl-sm rounded-r-base"
-                      : "right-0 pr-sm rounded-l-base",
-                  )}
-                  variants={sidebarVariants(sidebarPos)}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                >
-                  <div className="relative *:cursor-pointer flex flex-col gap-md py-md *:w-[44px] *:h-[44px] *:flex *:items-center *:justify-center">
-                    <button onClick={() => router.push("/")}>
-                      <Icon name="home" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (!me) {
-                          router.push("/login");
-                          return;
-                        }
-                        if (pathname !== "/dm") {
-                          router.push("/dm");
-                        }
-                      }}
-                      className="relative"
-                    >
-                      {totalUnreadCount > 0 && (
-                        <div className="absolute top-0 right-0 bg-like rounded-full w-[20px] h-[20px] flex items-center justify-center text-[12px]">
-                          {totalUnreadCount}
-                        </div>
-                      )}
-                      <Icon name="message" />
-                    </button>
-                    <motion.button
-                      onClick={() => {
-                        if (!me) {
-                          router.push("/login");
-                          return;
-                        }
-                        setIsOpen(true);
-                      }}
-                    >
-                      <AnimatePresence mode="wait">
-                        {wn.isRain ? (
-                          <motion.div
-                            key={isAlt ? "rain" : "post"}
-                            className="text-accent"
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            {isAlt ? (
-                              <Icon name="rain" />
-                            ) : (
-                              <Icon name="post" />
-                            )}
-                          </motion.div>
-                        ) : (
-                          <motion.div
-                            key="post-default"
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <Icon name="post" />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </motion.button>
-
-                    <button
-                      className="absolute bg-main/70 aspect-square rounded-base top-full mt-sm overflow-hidden"
-                      onClick={() => {
-                        if (!me) {
-                          router.push("/login");
-                          return;
-                        }
-                        pushDetail("/profile", me.id);
-                      }}
-                    >
-                      {me ? (
-                        <div className="w-full h-full">
-                          <Image
-                            className="object-cover"
-                            src={me.iconUrl || "/default-avatar.png"}
-                            alt="icon"
-                            fill
-                          />
-                        </div>
+        <AnimatePresence mode="wait">
+          {isShow && (
+            <div ref={sidebarRef} className="relative">
+              <motion.nav
+                key={`nav-${sidebarPos}`}
+                className={cn(
+                  "fixed top-1/2 w-fit h-fit text-base bg-main/70 z-50",
+                  sidebarPos === "left"
+                    ? "left-0 pl-sm rounded-r-base"
+                    : "right-0 pr-sm rounded-l-base",
+                )}
+                variants={sidebarVariants(sidebarPos)}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <div className="relative *:cursor-pointer flex flex-col gap-md py-md *:w-[44px] *:h-[44px] *:flex *:items-center *:justify-center">
+                  <button onClick={() => router.push("/")}>
+                    <Icon name="home" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!me) {
+                        router.push("/login");
+                        return;
+                      }
+                      if (pathname !== "/dm") {
+                        router.push("/dm");
+                      }
+                    }}
+                    className="relative"
+                  >
+                    {totalUnreadCount > 0 && (
+                      <div className="absolute top-0 right-0 bg-like rounded-full w-[20px] h-[20px] flex items-center justify-center text-[12px]">
+                        {totalUnreadCount}
+                      </div>
+                    )}
+                    <Icon name="message" />
+                  </button>
+                  <motion.button
+                    onClick={() => {
+                      if (!me) {
+                        router.push("/login");
+                        return;
+                      }
+                      setIsOpen(true);
+                    }}
+                  >
+                    <AnimatePresence mode="wait">
+                      {wn.isRain ? (
+                        <motion.div
+                          key={isAlt ? "rain" : "post"}
+                          className="text-accent"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          {isAlt ? <Icon name="rain" /> : <Icon name="post" />}
+                        </motion.div>
                       ) : (
-                        <Icon name="login" />
+                        <motion.div
+                          key="post-default"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <Icon name="post" />
+                        </motion.div>
                       )}
-                    </button>
-                  </div>
-                </motion.nav>
-                <motion.button
-                  key={`button-${sidebarPos}`}
-                  className={cn(
-                    "fixed top-1/2 bg-main/70 p-md rounded-base z-50",
-                    sidebarPos === "left" ? "mr-sm right-0" : "ml-sm left-0",
-                  )}
-                  onClick={() => toggleSidebar()}
-                  variants={sidebarVariants(
-                    sidebarPos === "left" ? "right" : "left",
-                  )}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                >
-                  <Icon name="reverse" />
-                </motion.button>
-              </div>
-            )}
-          </AnimatePresence>
-        )}
+                    </AnimatePresence>
+                  </motion.button>
+
+                  <button
+                    className="absolute bg-main/70 aspect-square rounded-base top-full mt-sm overflow-hidden"
+                    onClick={() => {
+                      if (!me) {
+                        router.push("/login");
+                        return;
+                      }
+                      pushDetail("/profile", me.id);
+                    }}
+                  >
+                    {me ? (
+                      <div className="w-full h-full">
+                        <Image
+                          className="object-cover"
+                          src={me.iconUrl || "/default-avatar.png"}
+                          alt="icon"
+                          fill
+                        />
+                      </div>
+                    ) : (
+                      <Icon name="login" />
+                    )}
+                  </button>
+                </div>
+              </motion.nav>
+              <motion.button
+                key={`button-${sidebarPos}`}
+                className={cn(
+                  "fixed top-1/2 bg-main/70 p-md rounded-base z-50",
+                  sidebarPos === "left" ? "mr-sm right-0" : "ml-sm left-0",
+                )}
+                onClick={() => toggleSidebar()}
+                variants={sidebarVariants(
+                  sidebarPos === "left" ? "right" : "left",
+                )}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <Icon name="reverse" />
+              </motion.button>
+            </div>
+          )}
+        </AnimatePresence>
 
         <PostDrawer isOpen={isOpen} onClose={() => setIsOpen(false)} />
         <MediaModal />
