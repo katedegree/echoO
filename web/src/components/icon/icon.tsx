@@ -34,7 +34,7 @@ const icons = {
   spinner: Spinner,
   reverse: ArrowLeftRight,
   send: Send,
-  rain: CloudRainWind,s
+  rain: CloudRainWind,
 } as const;
 
 interface Props {

@@ -37,6 +37,8 @@ export function MainLayout({ children }: Props) {
   const wn = useWnStore();
   const [isOpen, setIsOpen] = useState(false);
   const [isAlt, setIsAlt] = useState(false);
+  const [isStart, setIsStart] = useState(true);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (!wn.isRain) {
@@ -52,7 +54,25 @@ export function MainLayout({ children }: Props) {
   }, [wn.isRain]);
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsStart(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     initDetail(router.push, pathname);
+  }, []);
+
+  useEffect(() => {
+    const messages = [
+      "雨の日”だけ”前の投稿が覗ける。",
+      "秘密の投稿は晴れてから広がる。",
+      "雨の日は秘密の投稿をしませんか？",
+    ];
+    const index = Math.floor(Math.random() * messages.length);
+    setMessage(messages[index]);
   }, []);
 
   const { key, fetcher } = authMe();
@@ -128,6 +148,40 @@ export function MainLayout({ children }: Props) {
         />
 
         <main>{children}</main>
+
+        <AnimatePresence>
+          {isStart && (
+            <motion.div
+              className="fixed inset-0 z-60 bg-base bg-gradient flex flex-col gap-md items-center justify-center"
+              initial={false}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <Image
+                src="/logo-dark.png"
+                alt="logo"
+                width={160}
+                height={62.11}
+              />
+
+              <AnimatePresence mode="wait">
+                {message && (
+                  <motion.p
+                    key={message}
+                    className="text-sm font-bold text-white"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                  >
+                    {message}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {me !== undefined && (
           <AnimatePresence mode="wait">

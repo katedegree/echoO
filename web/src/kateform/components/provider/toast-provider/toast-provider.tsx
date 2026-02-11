@@ -21,7 +21,7 @@ export interface ToastProviderProps<T extends string> {
 export function ToastProvider<T extends string>({
   component: ToastComponent,
   placement = "bottom-right",
-  zIndex = 50,
+  zIndex = 100,
 }: ToastProviderProps<T>) {
   const { toasts, stopTimer, startTimer } = useToastStore();
   const [isHovered, setIsHovered] = useState(false);
