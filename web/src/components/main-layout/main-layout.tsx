@@ -56,7 +56,7 @@ export function MainLayout({ children }: Props) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsStart(false);
-    }, 3000);
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, []);

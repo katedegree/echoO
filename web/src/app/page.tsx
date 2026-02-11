@@ -19,6 +19,7 @@ export default function () {
         lng: null,
       });
     },
+    { refreshInterval: 15000 },
   );
 
   const posts = data ? data.flatMap((page) => page.data) : [];
